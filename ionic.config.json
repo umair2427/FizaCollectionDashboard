@@ -1,0 +1,7 @@
+{
+  "name": "FizzaCollectionDashboard",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
