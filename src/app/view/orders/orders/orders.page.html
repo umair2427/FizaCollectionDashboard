@@ -1,0 +1,159 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title class="text-base font-semibold text-center sm:text-start">ORDERS</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="bg-slate-200 pt-5">
+    <div class="bg-white">
+      <div
+        class="bg-white mx-4  sm:flex sm:justify-between sm:items-center pb-2 block text-center sm:text-start px-3 sm:pt-4 text-zinc-900 font-sans">
+        <p class="sm:w-1/2 font-semibold sm:text-lg">Order History</p>
+        <div class="sm:flex sm:justify-end sm:w-1/2 w-full mt-3 relative" routerLink="/create-order">
+          <button
+            class="bg-zinc-600 px-8 py-2 sm:w-44 w-full text-white font-sans text-sm rounded-sm transition hover:bg-zinc-500 duration-300">
+            Create Order
+          </button>
+        </div>
+      </div>
+      <div class="bg-white mx-4 pt-4 pb-2">
+        <div class="border-dashed border-t-2 border-zinc-200"></div>
+        <div class="w-full flex mt-5">
+          <div class="sm:w-1/3 w-full relative mx-5">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+              class="w-5 h-5 absolute left-2 top-2 text-zinc-500">
+              <path fill-rule="evenodd"
+                d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                clip-rule="evenodd" />
+            </svg>
+            <input type="search" (keyup)="applyFilter($event)"
+              placeholder="Search for order ID, order status or something..."
+              class="text-sm pl-10 text-zinc-500 font-sans w-full rounded-sm focus:outline-none focus:ring-zinc-400 focus:accent-zinc-400 focus:border-zinc-400" />
+          </div>
+        </div>
+        <div class="sm:flex sm:items-center w-full px-5 mt-5">
+          <div class="sm:w-1/3 w-full sm:pr-4">
+            <label class="block md:text-xs text-sm pb-1">Delivery Status</label>
+            <ng-select placeholder="Select--"
+              class="md:w-full border rounded-xl text-xs cursor-pointer text-gray-800 placeholder-gray-400"
+              bindLabel="name" bindValue="id" [(ngModel)]="selectedStatusFilter" [items]="deliveryStatus">
+            </ng-select>
+          </div>
+          <div class="sm:w-1/3 w-full sm:pr-4 mt-2 sm:mt-0">
+            <label class="block md:text-xs text-sm pb-1">Select Payment</label>
+            <ng-select placeholder="Select--"
+              class="md:w-full border rounded-xl text-xs cursor-pointer text-gray-800 placeholder-gray-400"
+              bindLabel="name" bindValue="id" [(ngModel)]="selectedPaymentFilter" [items]="paymentMethod">
+            </ng-select>
+          </div>
+          <div class="sm:w-1/3 w-full text-white cursor-pointer mt-2 sm:mt-4" (click)="applyFilters()">
+            <button
+              class="bg-zinc-800 w-full text-center py-2 rounded-sm text-sm transition hover:bg-zinc-700 duration-200">
+              Filters
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="text-end mt-5 bg-white mx-4 shadow-md">
+        <p class="text-rose-600 underline hover:text-rose-500 cursor-pointer" *ngIf="removeProduct" (click)="removeSelectedProducts()">
+          Remove
+        </p>
+      </div>
+      <div class="w-full mt-5 bg-white ml-4 shadow-md overflow-x-scroll">
+        <table class="w-full text-center" mat-table [dataSource]="dataSource" matSort
+          (matSortChange)="announceSortChange($event)">
+          <!-- check Column -->
+          <ng-container matColumnDef="check">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let element">
+              <input type="checkbox" (change)="changeSelect(element)" [checked]="isSelected(element)"
+                class="cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" />
+            </td>
+          </ng-container>
+
+          <!-- ORDER ID Column -->
+          <ng-container matColumnDef="order_id">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef sortActionDescription="Sort by product">
+              ORDER ID
+            </th>
+            <td mat-cell *matCellDef="let element">{{element.id}}</td>
+          </ng-container>
+
+          <!-- PRODUCTS Column -->
+          <ng-container matColumnDef="products">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by products">
+              PRODUCTS
+            </th>
+            <td mat-cell *matCellDef="let element">{{element.productNames}}</td>
+          </ng-container>
+
+          <!-- ORDER DATE Column -->
+          <ng-container matColumnDef="order_date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by order_date">
+              ORDER DATE
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.orderTime | date: 'yyyy-MM-dd'}}
+            </td>
+          </ng-container>
+
+          <!-- AMOUNT Column -->
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by amount">
+              AMOUNT
+            </th>
+            <td mat-cell *matCellDef="let element">RS: {{element.totalAmount}}</td>
+          </ng-container>
+
+          <!-- paymentMethod Column -->
+          <ng-container matColumnDef="paymentMethod">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by paymentMethod">
+              PAYMENT METHOD
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.methodNames}}
+            </td>
+          </ng-container>
+
+          <!-- deliveryStatus Column -->
+          <ng-container matColumnDef="deliveryStatus">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by deliveryStatus">
+              DELIVERY STATUS
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.deliveryStatus}}
+            </td>
+          </ng-container>
+
+          <!-- Action Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let element">
+              <div class="flex">
+                <svg (click)="navigateToProductDetail(element.shipping_id)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                  fill="currentColor" class="w-4 h-4 text-zinc-800 cursor-pointer mr-2">
+                  <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+                  <path fill-rule="evenodd"
+                    d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                    clip-rule="evenodd" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" (click)="openDialog(element.shipping_id)"
+                  class="w-4 h-4 text-rose-600 cursor-pointer mr-2">
+                  <path fill-rule="evenodd"
+                    d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
+                    clip-rule="evenodd" />
+                </svg>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="[10, 25, 50]"
+          (page)="paginate($event)"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</ion-content>

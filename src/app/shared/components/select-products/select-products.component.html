@@ -1,0 +1,77 @@
+<!-- YourComponent's HTML template -->
+<div>
+  <div class="text-xl font-semibold text-zinc-600 py-4 px-3">
+    <p>Products</p>
+  </div>
+  <div class="text-end pb-5 pr-3 absolute top-3 right-2">
+    <button
+      type="button"
+      (click)="close()"
+      class="bg-slate-200 px-4 py-2 text-sm mr-3 rounded-sm font-sans"
+    >
+      Close
+    </button>
+    <button
+      type="button"
+      (click)="closeModel()"
+      class="bg-zinc-800 text-white px-8 py-2 font-sans text-sm transition hover:bg-zinc-700 duration-300"
+    >
+      Select Products
+    </button>
+  </div>
+  <div>
+    <table class="w-full">
+      <tr>
+        <th>#</th>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Created At</th>
+      </tr>
+      <tr
+        class="text-center h-20 even:bg-gray-100 odd:bg-white"
+        *ngFor="let product of displayedProducts"
+      >
+        <td class="w-16">
+          <input
+            type="checkbox"
+            [checked]="isSelected(product)"
+            (change)="toggleProductSelection(product)"
+            class="cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
+          />
+        </td>
+        <td class="w-2/4">
+          <div class="flex p-2">
+            <img [src]="product.productMainImage" alt="" class="w-14 h-14" />
+            <div class="p-2 text-zinc-500 font-sans">
+              <p class="cursor-pointer hover:text-zinc-400">
+                {{ product.productName }}
+              </p>
+              <p>Category: {{ product.categoryName }}</p>
+            </div>
+          </div>
+        </td>
+        <td>{{ product.productPrice }}</td>
+        <td>{{ product.productDateTime | date : "dd/MM/yyyy" }}</td>
+      </tr>
+    </table>
+    <div class="pagination flex items-center justify-center mt-4">
+      <button
+        class="pagination-button px-4 py-2 mr-2 bg-gray-300 text-gray-600 rounded focus:outline-none"
+        [disabled]="pageIndex === 0"
+        (click)="previousPage()"
+      >
+        Previous
+      </button>
+      <span class="pagination-info text-gray-600">
+        Page {{ pageIndex + 1 }} of {{ totalPages }}
+      </span>
+      <button
+        class="pagination-button px-4 py-2 ml-2 bg-gray-300 text-gray-600 rounded focus:outline-none"
+        [disabled]="pageIndex === totalPages - 1"
+        (click)="nextPage()"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</div>

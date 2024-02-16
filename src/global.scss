@@ -24,3 +24,47 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "~font-awesome/css/font-awesome.min.css";
+
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@100;200;300;400;600;700;800;900&display=swap');
+
+*{
+    font-family: 'Archivo', sans-serif;
+}
+
+@import 'ngx-owl-carousel-o/lib/styles/scss/owl.carousel';
+@import 'ngx-owl-carousel-o/lib/styles/scss/owl.theme.default';
+
+
+//ng-select
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+.ng-select-container {
+  height: 40px !important;
+}
+
+.ng-select {
+  border: none;
+
+  .ng-select-container {
+    @apply h-10 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5;
+  }
+
+}
+
+::ng-deep .apexcharts-menu-item.exportCSV {
+  display: none;
+}
+
+
+.container{
+  max-width: 85%;
+  margin: 0 auto;
+}
