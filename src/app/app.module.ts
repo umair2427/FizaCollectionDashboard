@@ -14,6 +14,7 @@ import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { TokenInterceptorInterceptor } from './shared/interceptor/token-interceptor.interceptor';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     BrowserAnimationsModule,
     HttpClientModule,
     CKEditorModule,
+    MatDialogModule,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => {
       {

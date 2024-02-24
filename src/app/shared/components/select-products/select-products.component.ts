@@ -58,7 +58,6 @@ export class SelectProductsComponent implements OnInit {
       (data) => {
         this.products = data.products;
         this.totalItems = data.totalCount;
-        this.displayedProducts = this.getPaginatedProducts();
       },
       (error) => {
         console.error('Error:', error);
@@ -66,23 +65,17 @@ export class SelectProductsComponent implements OnInit {
     );
   }
 
-  getPaginatedProducts(): Product[] {
-    const startIndex = this.pageIndex * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    return this.products.slice(startIndex, endIndex);
-  }
-
   nextPage() {
     if (this.pageIndex < this.totalPages - 1) {
       this.pageIndex++;
-      this.displayedProducts = this.getPaginatedProducts();
+      this.getProducts(this.pageIndex + 1, this.pageSize);
     }
   }
 
   previousPage() {
     if (this.pageIndex > 0) {
       this.pageIndex--;
-      this.displayedProducts = this.getPaginatedProducts();
+      this.getProducts(this.pageIndex + 1, this.pageSize);
     }
   }
 }

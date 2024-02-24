@@ -1,0 +1,31 @@
+<div class="bg-white">
+  <div class="px-5">
+    <div class="flex justify-between items-center pt-3">
+      <p class="font-semibold text-gray-700">Profile</p>
+      <ion-icon name="close-outline" class="p-2 rounded-xl bg-gray-100 cursor-pointer" (click)="close()"></ion-icon>
+    </div>
+    <!-- <div class="flex justify-between items-center mt-3 text-sm py-4 px-4 rounded-2xl bg-gray-100 pointer-events-none">
+      <div class="flex items-center">
+        <ion-icon name="timer-outline" class="text-xl mr-3"></ion-icon>
+        <p class="font-medium">Orders History</p>
+      </div>
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </div>
+    <div class="flex justify-between items-center mt-3 text-sm py-4 px-4 rounded-2xl bg-gray-100 cursor-pointer">
+      <div class="flex items-center">
+        <ion-icon name="pencil-outline" class="text-xl mr-3"></ion-icon>
+        <p class="font-medium">Edit Profile</p>
+      </div>
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </div> -->
+    <div (click)="logOut()" class="flex justify-between items-center mt-3 text-sm py-4 px-4 rounded-2xl bg-gray-100 cursor-pointer">
+      <div class="flex items-center text-red-700">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+        </svg>
+        <p class="font-medium">Logout</p>
+      </div>
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </div>
+  </div>
+</div>

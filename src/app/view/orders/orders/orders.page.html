@@ -151,7 +151,7 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <mat-paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="[10, 25, 50]"
+        <mat-paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="[2, 10, 25, 50]"
           (page)="paginate($event)"></mat-paginator>
       </div>
     </div>

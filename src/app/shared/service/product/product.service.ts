@@ -50,7 +50,7 @@ export class ProductService {
       )
   }
 
-  getProducts(page: number = 1, pageSize: number = 10): Observable<{ products: Product[], totalCount: number }> {
+  getProducts(page: number, pageSize: number): Observable<{ products: Product[], totalCount: number }> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
@@ -62,9 +62,9 @@ export class ProductService {
       )
   }
 
-  getProductById(id: number): Observable<{product: Product}> {
+  getProductById(id: number): Observable<{ product: Product }> {
     this.setLoading(true);
-    return this.http.get<{product: Product}>(`${environment.url}getSingleProduct/${id}`)
+    return this.http.get<{ product: Product }>(`${environment.url}getSingleProduct/${id}`)
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))

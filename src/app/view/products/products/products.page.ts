@@ -25,8 +25,9 @@ export class ProductsPage implements OnInit {
     'action',
   ];
   dataSource = new MatTableDataSource<Product>();
-  pageSize = 10;
-  totalItems = 0;
+  pageSize: number = 10;
+  pageIndex:number = 0;
+  totalItems: number = 0;
   radioPrice = null;
   radioDiscount = null;
   showDiscount: boolean = true;
@@ -57,9 +58,9 @@ export class ProductsPage implements OnInit {
     this.getProducts(1, this.pageSize);
   }
 
-  ionViewWillEnter(): void{
-    this.getProducts(1, this.pageSize);
-  }
+  // ionViewWillEnter(): void {
+  //   this.getProducts(1, this.pageSize);
+  // }
 
   getProducts(page: number, pageSize: number): void {
     this.productService.getProducts(page, pageSize).subscribe(
@@ -71,6 +72,10 @@ export class ProductsPage implements OnInit {
         console.error('Error:', error);
       }
     );
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalItems / this.pageSize);
   }
 
   openDialog(productId: number) {
@@ -117,6 +122,7 @@ export class ProductsPage implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+
   }
 
   priceFilter(event: any) {
@@ -169,7 +175,7 @@ export class ProductsPage implements OnInit {
         disableClose: true,
         width: '400px',
         height: 'auto',
-        data: { productIds:null, selectedProductIds }
+        data: { productIds: null, selectedProductIds }
       });
       if (this.dialogRef) {
         this.dialogRef.afterClosed().subscribe(result => {
@@ -188,9 +194,18 @@ export class ProductsPage implements OnInit {
     );
   }
 
-  onPageChange(event: any): void {
-    const page = event.pageIndex + 1;
-    this.getProducts(page, this.pageSize);
+  nextPage() {
+    if (this.pageIndex < this.totalPages - 1) {
+      this.pageIndex++;
+      this.getProducts(this.pageIndex + 1, this.pageSize);
+    }
+  }
+
+  previousPage() {
+    if (this.pageIndex > 0) {
+      this.pageIndex--;
+      this.getProducts(this.pageIndex + 1, this.pageSize);
+    }
   }
 
   reset() {

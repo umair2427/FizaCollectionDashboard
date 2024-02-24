@@ -31,11 +31,9 @@ export class TokenInterceptorInterceptor implements HttpInterceptor {
           errorMsg = `Error Code: ${error.status},  Message: ${error.message}`;
 
           if (error?.error?.message?.code === "auth/argument-error") {
-            this.authService.sessionExpire();
             this.navCtrl.navigateForward('login', { animated: false });
           }
           else if (error?.error?.message?.code === "auth/id-token-expired") {
-            this.authService.sessionExpire();
             this.navCtrl.navigateForward('login', { animated: false });
           }
         }
@@ -82,66 +80,3 @@ export class TokenInterceptorInterceptor implements HttpInterceptor {
     await toast.present();
   }
 }
-
-
-// import { Injectable } from '@angular/core';
-// import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent } from '@angular/common/http';
-// import { Observable, from, throwError } from 'rxjs';
-// import { catchError, retry, switchMap } from 'rxjs/operators';
-// import { Auth } from '@angular/fire/auth';
-// import { map } from 'rxjs/operators';
-
-// @Injectable()
-// export class TokenInterceptorInterceptor implements HttpInterceptor {
-//   private firebaseUser: any;
-
-//   constructor(private auth: Auth) {}
-
-//   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-//     const token = localStorage.getItem('idToken');
-
-//     if (token) {
-//       request = this.addToken(request, token);
-//     }
-
-//     return next.handle(request).pipe(
-//       catchError((error) => {
-//         if (error.status === 401) {
-//           return this.handle401Error(request, next);
-//         } else {
-//           return throwError(error);
-//         }
-//       })
-//     );
-//   }
-
-//   private addToken(request: HttpRequest<any>, token: string): HttpRequest<any> {
-//     return request.clone({
-//       setHeaders: {
-//         Authorization: `Bearer ${token}`
-//       }
-//     });
-//   }
-
-//   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-//     this.firebaseUser = this.auth.currentUser;
-
-//     if (!this.firebaseUser) {
-//       return throwError('No user logged in');
-//     }
-
-//     return from(this.firebaseUser.getIdToken(true)).pipe(
-//       switchMap((token: any) => {
-//         localStorage.setItem('idToken',token);
-//         const newRequest = this.addToken(request, token);
-//         return next.handle(newRequest);
-//       }),
-//       catchError((error) => {
-//         console.error('Error refreshing token', error);
-//         return throwError(error);
-//       }),
-//       // retry(1),
-//       map((response) => response as HttpEvent<any>)
-//     );
-//   }
-// }

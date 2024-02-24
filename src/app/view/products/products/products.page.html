@@ -7,14 +7,9 @@
 <ion-content [fullscreen]="true">
   <div class="flex flex-col md:flex-row sm:flex-col justify-between bg-slate-100 w-full">
     <div class="w-full md:w-1/4 sm:w-full mt-5 px-5 py-2 shadow-md mx-2 bg-white">
-      <div
-        class="flex justify-between items-center border border-zinc-200 pb-8 px-2 pt-1 shadow-sm"
-      >
+      <div class="flex justify-between items-center border border-zinc-200 pb-8 px-2 pt-1 shadow-sm">
         <p class="text-zinc-600 font-semibold text-lg">Filter</p>
-        <p
-          class="text-zinc-500 underline cursor-pointer hover:text-zinc-400"
-          (click)="reset()"
-        >
+        <p class="text-zinc-500 underline cursor-pointer hover:text-zinc-400" (click)="reset()">
           Clear All
         </p>
       </div>
@@ -22,47 +17,23 @@
         <p class="text-zinc-600 font-semibold text-lg">Price</p>
         <div>
           <div class="my-2">
-            <input
-              type="radio"
-              class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-              value="500"
-              [(ngModel)]="radioPrice"
-              name="price"
-              (change)="priceFilter($event)"
-            />
+            <input type="radio" class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" value="500"
+              [(ngModel)]="radioPrice" name="price" (change)="priceFilter($event)" />
             <label class="text-zinc-500 tracking-wide">500-1000</label>
           </div>
           <div class="mb-2">
-            <input
-              type="radio"
-              class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-              value="1000"
-              [(ngModel)]="radioPrice"
-              name="price"
-              (change)="priceFilter($event)"
-            />
+            <input type="radio" class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" value="1000"
+              [(ngModel)]="radioPrice" name="price" (change)="priceFilter($event)" />
             <label class="text-zinc-500 tracking-wide">1000-1500</label>
           </div>
           <div class="mb-2">
-            <input
-              type="radio"
-              class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-              value="1500"
-              [(ngModel)]="radioPrice"
-              name="price"
-              (change)="priceFilter($event)"
-            />
+            <input type="radio" class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" value="1500"
+              [(ngModel)]="radioPrice" name="price" (change)="priceFilter($event)" />
             <label class="text-zinc-500 tracking-wide">1500-2000</label>
           </div>
           <div class="mb-2">
-            <input
-              type="radio"
-              class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-              value="2000"
-              [(ngModel)]="radioPrice"
-              name="price"
-              (change)="priceFilter($event)"
-            />
+            <input type="radio" class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" value="2000"
+              [(ngModel)]="radioPrice" name="price" (change)="priceFilter($event)" />
             <label class="text-zinc-500 tracking-wide">2000-2500</label>
           </div>
         </div>
@@ -70,126 +41,47 @@
       <div class="border border-zinc-200 pb-8 px-2 pt-1 shadow-sm mt-2">
         <div class="flex justify-between mb-2">
           <p class="text-zinc-600 font-semibold text-lg">Discount</p>
-          <div
-            (click)="showDiscount = !showDiscount"
-            class="cursor-pointer text-zinc-600 ml-3"
-          >
-            <svg
-              *ngIf="showDiscount"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-              />
+          <div (click)="showDiscount = !showDiscount" class="cursor-pointer text-zinc-600 ml-3">
+            <svg *ngIf="showDiscount" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
             </svg>
-            <svg
-              *ngIf="!showDiscount"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M4.5 15.75l7.5-7.5 7.5 7.5"
-              />
+            <svg *ngIf="!showDiscount" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
             </svg>
           </div>
         </div>
         <div *ngIf="showDiscount">
           <div class="">
-            <input
-              type="radio"
-              (change)="discountFilter($event)"
-              id="50"
-              name="discount"
-              [(ngModel)]="radioDiscount"
-              value="50"
-              class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-            />
-            <label for="50" class="text-zinc-500 tracking-wide"
-              >50% or more</label
-            >
+            <input type="radio" (change)="discountFilter($event)" id="50" name="discount" [(ngModel)]="radioDiscount"
+              value="50" class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" />
+            <label for="50" class="text-zinc-500 tracking-wide">50% or more</label>
           </div>
           <div class="">
-            <input
-              type="radio"
-              (change)="discountFilter($event)"
-              id="40"
-              name="discount"
-              [(ngModel)]="radioDiscount"
-              value="40"
-              class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-            />
-            <label for="40" class="text-zinc-500 tracking-wide"
-              >40% or more</label
-            >
+            <input type="radio" (change)="discountFilter($event)" id="40" name="discount" [(ngModel)]="radioDiscount"
+              value="40" class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" />
+            <label for="40" class="text-zinc-500 tracking-wide">40% or more</label>
           </div>
           <div class="">
-            <input
-              type="radio"
-              (change)="discountFilter($event)"
-              id="30"
-              name="discount"
-              [(ngModel)]="radioDiscount"
-              value="30"
-              class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-            />
-            <label for="30" class="text-zinc-500 tracking-wide"
-              >30% or more</label
-            >
+            <input type="radio" (change)="discountFilter($event)" id="30" name="discount" [(ngModel)]="radioDiscount"
+              value="30" class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" />
+            <label for="30" class="text-zinc-500 tracking-wide">30% or more</label>
           </div>
           <div class="">
-            <input
-              type="radio"
-              (change)="discountFilter($event)"
-              id="20"
-              name="discount"
-              [(ngModel)]="radioDiscount"
-              value="20"
-              class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-            />
-            <label for="20" class="text-zinc-500 tracking-wide"
-              >20% or more</label
-            >
+            <input type="radio" (change)="discountFilter($event)" id="20" name="discount" [(ngModel)]="radioDiscount"
+              value="20" class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" />
+            <label for="20" class="text-zinc-500 tracking-wide">20% or more</label>
           </div>
           <div class="">
-            <input
-              type="radio"
-              (change)="discountFilter($event)"
-              id="10"
-              name="discount"
-              [(ngModel)]="radioDiscount"
-              value="10"
-              class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-            />
-            <label for="10" class="text-zinc-500 tracking-wide"
-              >10% or more</label
-            >
+            <input type="radio" (change)="discountFilter($event)" id="10" name="discount" [(ngModel)]="radioDiscount"
+              value="10" class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" />
+            <label for="10" class="text-zinc-500 tracking-wide">10% or more</label>
           </div>
           <div class="">
-            <input
-              type="radio"
-              (change)="discountFilter($event)"
-              id="0"
-              name="discount"
-              [(ngModel)]="radioDiscount"
-              value="1"
-              class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-            />
-            <label for="0" class="text-zinc-500 tracking-wide"
-              >Less than 10%</label
-            >
+            <input type="radio" (change)="discountFilter($event)" id="0" name="discount" [(ngModel)]="radioDiscount"
+              value="1" class="mr-5 cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" />
+            <label for="0" class="text-zinc-500 tracking-wide">Less than 10%</label>
           </div>
         </div>
       </div>
@@ -197,21 +89,12 @@
     <div class="w-full md:w-3/4 sm:w-full bg-white shadow-md mt-5 mx-3">
       <div class="flex flex-col md:flex-row sm:flex-col justify-between mx-5 mt-3">
         <div class="relative w-full md:w-1/2 md:pr-2 sm:w-full sm:pr-0">
-          <button
-            type="button"
-            routerLink="/add-product"
-            class="flex items-center justify-center py-2 w-full md:w-auto sm:w-full px-8 bg-zinc-700 text-white rounded-3xl hover:bg-zinc-600"
-          >
+          <button type="button" routerLink="/add-product"
+            class="flex items-center justify-center py-2 w-full md:w-auto sm:w-full px-8 bg-zinc-700 text-white rounded-3xl hover:bg-zinc-600">
             <span class="md:static md:left-2 md:top-2.5 sm:relative sm.left-0 sm.top-0">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                class="w-5 h-5"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
                 <path
-                  d="M10.75 6.75a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z"
-                />
+                  d="M10.75 6.75a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z" />
               </svg>
             </span>
             <span class="md:inline-block sm:inline-block">Add Products</span>
@@ -220,51 +103,32 @@
         <div class="w-full md:w-1/2 md:pl-2 sm:w-full sm:pl-0 mt-3 md:mt-0 sm:mt-3">
           <div class="relative sm:w-full">
             <span class="md:static md:left-2 md:top-3 sm:relative sm.left-0 sm.top-0 text-zinc-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                class="w-5 h-5 absolute sm:top-2.5 sm:left-3 top-2.5 left-1"
-              >
-                <path
-                  fill-rule="evenodd"
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                class="w-5 h-5 absolute sm:top-2.5 sm:left-3 top-2.5 left-1">
+                <path fill-rule="evenodd"
                   d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                  clip-rule="evenodd"
-                />
+                  clip-rule="evenodd" />
               </svg>
             </span>
-            <input
-              type="search"
-              (keyup)="applyFilter($event)"
-              placeholder="search products..."
-              class="w-full pl-10 text-base rounded-md border border-zinc-300 placeholder-zinc-400 focus:ring-zinc-300 focus:border-zinc-300"
-            />
+            <input type="search" (keyup)="applyFilter($event)" placeholder="search products..."
+              class="w-full pl-10 text-base rounded-md border border-zinc-300 placeholder-zinc-400 focus:ring-zinc-300 focus:border-zinc-300" />
           </div>
         </div>
 
 
       </div>
-      <div class="text-end mx-10 mt-5 md:mt-10 sm:mt-5">
-        <p class="text-rose-600 underline hover:text-rose-500 cursor-pointer" *ngIf="removeProduct" (click)="removeSelectedProducts()">Remove</p>
+      <div class="text-end mx-10 mt-5 md:mt-10 sm:mt-5" *ngIf="removeProduct">
+        <p class="text-rose-600 underline hover:text-rose-500 cursor-pointer inline-block"
+          (click)="removeSelectedProducts()">Remove</p>
       </div>
       <div class="mx-5 overflow-x-auto">
-        <table
-          class="w-full"
-          mat-table
-          [dataSource]="dataSource"
-          matSort
-          (matSortChange)="announceSortChange($event)"
-        >
+        <table class="w-full" mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
           <!-- check Column -->
           <ng-container matColumnDef="check">
             <th mat-header-cell *matHeaderCellDef>#</th>
             <td mat-cell *matCellDef="let element">
-              <input
-                type="checkbox"
-                (change)="changeSelect(element)"
-                [checked]="isSelected(element)"
-                class="cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0"
-              />
+              <input type="checkbox" (change)="changeSelect(element)" [checked]="isSelected(element)"
+                class="cursor-pointer text-zinc-500 focus:ring-0 focus:ring-offset-0" />
             </td>
           </ng-container>
 
@@ -286,12 +150,7 @@
 
           <!-- Price Column -->
           <ng-container matColumnDef="price">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              mat-sort-header
-              sortActionDescription="Sort by Price"
-            >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Price">
               Price
             </th>
             <td mat-cell *matCellDef="let element">{{element.productPrice}}</td>
@@ -299,12 +158,7 @@
 
           <!-- Published Column -->
           <ng-container matColumnDef="createdAt">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              mat-sort-header
-              sortActionDescription="Sort by Published"
-            >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Published">
               Published
             </th>
             <td mat-cell *matCellDef="let element">
@@ -317,40 +171,23 @@
             <th mat-header-cell *matHeaderCellDef>Action</th>
             <td mat-cell *matCellDef="let element">
               <div class="flex">
-                <svg (click)="navigateToProductDetail(element.id, 'product-details')"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="w-4 h-4 text-zinc-800 cursor-pointer mr-2"
-                >
+                <svg (click)="navigateToProductDetail(element.id, 'product-details')" xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-zinc-800 cursor-pointer mr-2">
                   <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
-                  <path
-                    fill-rule="evenodd"
+                  <path fill-rule="evenodd"
                     d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                    clip-rule="evenodd"
-                  />
+                    clip-rule="evenodd" />
                 </svg>
-                <svg (click)="navigateToProductDetail(element.id, 'update-product')"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="w-4 h-4 text-blue-700 cursor-pointer mr-2"
-                >
+                <svg (click)="navigateToProductDetail(element.id, 'update-product')" xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-blue-700 cursor-pointer mr-2">
                   <path
-                    d="M2.695 14.763l-1.262 3.154a.5.5 0 00.65.65l3.155-1.262a4 4 0 001.343-.885L17.5 5.5a2.121 2.121 0 00-3-3L3.58 13.42a4 4 0 00-.885 1.343z"
-                  />
+                    d="M2.695 14.763l-1.262 3.154a.5.5 0 00.65.65l3.155-1.262a4 4 0 001.343-.885L17.5 5.5a2.121 2.121 0 00-3-3L3.58 13.42a4 4 0 00-.885 1.343z" />
                 </svg>
-                <svg (click)="openDialog(element.id)"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="w-4 h-4 text-rose-600 cursor-pointer mr-2"
-                >
-                  <path
-                    fill-rule="evenodd"
+                <svg (click)="openDialog(element.id)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                  fill="currentColor" class="w-4 h-4 text-rose-600 cursor-pointer mr-2">
+                  <path fill-rule="evenodd"
                     d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
-                    clip-rule="evenodd"
-                  />
+                    clip-rule="evenodd" />
                 </svg>
               </div>
             </td>
@@ -359,7 +196,25 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 25, 100]" (page)="onPageChange($event)"></mat-paginator>
+        <div class="pagination flex items-center justify-end mt-4">
+          <button
+            class="pagination-button px-4 py-2 mr-2 bg-gray-300 text-gray-600 rounded focus:outline-none"
+            [disabled]="pageIndex === 0"
+            (click)="previousPage()"
+          >
+            Previous
+          </button>
+          <span class="pagination-info text-gray-600">
+            Page {{ pageIndex + 1 }} of {{ totalPages }}
+          </span>
+          <button
+            class="pagination-button px-4 py-2 ml-2 bg-gray-300 text-gray-600 rounded focus:outline-none"
+            [disabled]="pageIndex === totalPages - 1"
+            (click)="nextPage()"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+import { ProfileComponent } from './shared/components/profile/profile.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +21,9 @@ export class AppComponent implements OnInit{
   };
   showHeader: boolean = true;
 
-  constructor(public router: Router, private activatedRoute: ActivatedRoute, private angularFireMessaging: AngularFireMessaging,) {
+  constructor(public router: Router, private activatedRoute: ActivatedRoute,
+    private angularFireMessaging: AngularFireMessaging,
+    public dialog: MatDialog,) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event) => {
@@ -44,6 +48,16 @@ export class AppComponent implements OnInit{
     this.angularFireMessaging.messages.subscribe((res)=>{
       console.log("Message", res);
     })
+  }
+
+  openProfileDialog() {
+    this.dialog.open(ProfileComponent, {
+      disableClose: true,
+      width: '300px',
+      height: '120px',
+      position: { right: '0px', top: '70px' },
+      panelClass: ['animate__animated', 'animate__slideInRight'],
+    });
   }
 
   products() {

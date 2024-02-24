@@ -8,11 +8,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SelectProductsComponent } from '../components/select-products/select-products.component';
-
+import { ProfileComponent } from '../components/profile/profile.component';
 
 @NgModule({
-  declarations: [DeleteModalComponent, SelectProductsComponent],
-  exports: [DeleteModalComponent, SelectProductsComponent],
+  declarations: [DeleteModalComponent, SelectProductsComponent, ProfileComponent],
+  exports: [DeleteModalComponent, SelectProductsComponent, ProfileComponent],
   imports: [
     CommonModule,
     MatDialogModule,
@@ -21,7 +21,7 @@ import { SelectProductsComponent } from '../components/select-products/select-pr
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    NgSelectModule
+    NgSelectModule,
   ]
 })
 export class SharedModule { }

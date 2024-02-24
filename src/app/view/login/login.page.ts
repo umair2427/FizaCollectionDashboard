@@ -4,7 +4,7 @@ import { AuthService } from '../../shared/service/auth.service';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 
-import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-login',
@@ -32,13 +32,14 @@ export class LoginPage implements OnInit {
     return this.loginForm.controls;
   }
 
-  login() {
-    let email = this.loginForm.value.email;
-    let password = this.loginForm.value.password;
-    signInWithEmailAndPassword(this.auth, email, password).then(async (res: any) => {
-      localStorage.setItem('idToken', res._tokenResponse.idToken);
-      this.router.navigate(['/products'])
-    })
+  ionViewWillEnter(): void{
+    this.loginForm.reset();
+  }
+
+  async login() {
+    const email = this.loginForm.value.email;
+    const password = this.loginForm.value.password;
+    await this.authService.login(email, password);
   }
 
   async presentToast(position: any) {

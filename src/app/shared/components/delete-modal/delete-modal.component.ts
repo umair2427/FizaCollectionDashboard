@@ -23,13 +23,13 @@ export class DeleteModalComponent implements OnInit {
   ngOnInit() {
     this.isLoading$ = this.productService.isLoading$;
     if(this.data.productId){
-      this.product = 'product';
+      this.product = 'this product';
     } else if(this.data.selectedProductIds){
-      this.product = 'products';
+      this.product = 'these products';
     } else if (this.data.shipping_id){
-      this.product = 'order';
+      this.product = 'this order';
     } else if(this.data.selectedOrderIds) {
-      this.product = 'orders'
+      this.product = 'these orders'
     } else{
       console.log("Hello");
     }
