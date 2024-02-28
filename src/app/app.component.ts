@@ -4,6 +4,7 @@ import { filter } from 'rxjs/operators';
 import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import { ProfileComponent } from './shared/components/profile/profile.component';
 import { MatDialog } from '@angular/material/dialog';
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ export class AppComponent implements OnInit{
     is_dashboard_open: false,
   };
   showHeader: boolean = true;
+  socket!: io.Socket;
 
   constructor(public router: Router, private activatedRoute: ActivatedRoute,
     private angularFireMessaging: AngularFireMessaging,
@@ -31,6 +33,7 @@ export class AppComponent implements OnInit{
           this.showHeader = event.url !== '/' && event.url !== '/login';
         }
       });
+      this.socket = io.connect('http://localhost:3000', { transports: ['websocket', 'polling', 'flashsocket'] });
   }
 
   toggleDropdown(key: 'is_products_open' | 'is_dashboard_open') {
@@ -42,12 +45,18 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.angularFireMessaging.requestToken.subscribe((res)=>{
-      console.log("Token", res);
+    this.socket.on('connect', () => {
+      console.log('Connected to server');
     });
-    this.angularFireMessaging.messages.subscribe((res)=>{
-      console.log("Message", res);
-    })
+
+    this.socket.on('newOrder', (message: string) => {
+      console.log('Received notification:', message);
+      // Handle the notification
+    });
+
+    this.socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
   }
 
   openProfileDialog() {

@@ -26,8 +26,9 @@ export class OrdersPage implements OnInit {
   deliveryStatus: items[] = [];
   paymentMethod: items[] = [];
   pageSize = 10;
-  currentPage = 1;
+  pageIndex:number = 0;
   selectedOrders: any[] = [];
+  totalItems: number = 0;
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private cdRef: ChangeDetectorRef,
@@ -38,7 +39,7 @@ export class OrdersPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getOrderItems();
+    this.getOrderItems(1, this.pageSize);
     this.showDeliveryStatus();
     this.getPaymentMethod();
   }
@@ -65,6 +66,10 @@ export class OrdersPage implements OnInit {
 
     this.dataSource.paginator = this.paginator;
     this.cdRef.detectChanges();
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalItems / this.pageSize);
   }
 
   announceSortChange(sortState: Sort) {
@@ -104,10 +109,11 @@ export class OrdersPage implements OnInit {
     this.dataSource.data = this.dataSource.data.filter((order) => order.s_id === this.selectedStatusFilter && order.paymentMethod === this.selectedPaymentFilter)
   }
 
-  getOrderItems() {
-    this.orderService.getOrders(this.currentPage, this.pageSize).subscribe(
+  getOrderItems(page: number, pageSize: number) {
+    this.orderService.getOrders(page, pageSize).subscribe(
       (response) => {
         this.dataSource.data = response.orders;
+        this.totalItems = response.totalCount;
       },
       (error) => {
         console.log(error);
@@ -115,10 +121,22 @@ export class OrdersPage implements OnInit {
     );
   }
 
-  paginate(event: PageEvent) {
-    this.currentPage = event.pageIndex + 1;
-    this.pageSize = event.pageSize;
-    this.getOrderItems();
+  showDeliveryStatus() {
+    this.productService.getDeliveryStatus().subscribe((res: items) => {
+      this.deliveryStatus = res.data;
+    },
+      (error) => {
+        console.error('Error fetching status:', error);
+      })
+  }
+
+  getPaymentMethod() {
+    this.productService.getPaymentMethod().subscribe((res: items) => {
+      this.paymentMethod = res.data;
+    },
+      (error) => {
+        console.error('Error fetching status:', error);
+      })
   }
 
   navigateToProductDetail(productId?: number) {
@@ -139,7 +157,7 @@ export class OrdersPage implements OnInit {
     if (this.dialogRef) {
       this.dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.getOrderItems();
+          this.getOrderItems(1, this.pageSize);
         }
       });
     }
@@ -159,27 +177,24 @@ export class OrdersPage implements OnInit {
         this.dialogRef.afterClosed().subscribe(result => {
           if (result) {
             this.removeProduct = false;
-            this.getOrderItems();
+            this.getOrderItems(1, this.pageSize);
           }
         });
       }
     }
   }
 
-  showDeliveryStatus() {
-    this.productService.getDeliveryStatus().subscribe((res: items) => {
-      this.deliveryStatus = res.data;
-    },
-      (error) => {
-        console.error('Error fetching status:', error);
-      })
+  nextPage() {
+    if (this.pageIndex < this.totalPages - 1) {
+      this.pageIndex++;
+      this.getOrderItems(this.pageIndex + 1, this.pageSize);
+    }
   }
-  getPaymentMethod() {
-    this.productService.getPaymentMethod().subscribe((res: items) => {
-      this.paymentMethod = res.data;
-    },
-      (error) => {
-        console.error('Error fetching status:', error);
-      })
+
+  previousPage() {
+    if (this.pageIndex > 0) {
+      this.pageIndex--;
+      this.getOrderItems(this.pageIndex + 1, this.pageSize);
+    }
   }
 }

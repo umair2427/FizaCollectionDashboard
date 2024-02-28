@@ -32,6 +32,9 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.auth.currentUser;
+    // console.log(this.auth);
+
+    const idToken = localStorage.getItem('idToken');
+    return !!idToken;
   }
 }

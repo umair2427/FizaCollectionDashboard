@@ -235,7 +235,6 @@ export class CreateOrderPage implements OnInit {
     }
     this.orderForm.get('products')?.setValue(this.getProductIds);
     +(this.orderForm.get('paymentMethod')?.value)
-    console.log(typeof +(this.orderForm.get('paymentMethod')?.value), this.orderForm.value);
     const orderForm = this.orderForm.value
     const obj = {
       email: orderForm.billingForm.email,

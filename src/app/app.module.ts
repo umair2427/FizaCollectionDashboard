@@ -16,7 +16,6 @@ import { TokenInterceptorInterceptor } from './shared/interceptor/token-intercep
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { MatDialogModule } from '@angular/material/dialog';
 
-
 @NgModule({
   declarations: [AppComponent],
   imports: [

@@ -60,7 +60,7 @@
           Remove
         </p>
       </div>
-      <div class="w-full mt-5 bg-white ml-4 shadow-md overflow-x-scroll">
+      <div class="w-full mt-5 bg-white shadow-md overflow-x-scroll">
         <table class="w-full text-center" mat-table [dataSource]="dataSource" matSort
           (matSortChange)="announceSortChange($event)">
           <!-- check Column -->
@@ -151,8 +151,25 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <mat-paginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="[2, 10, 25, 50]"
-          (page)="paginate($event)"></mat-paginator>
+        <div class="pagination flex items-center justify-end my-4">
+          <button
+            class="pagination-button px-4 py-2 mr-2 bg-gray-300 text-gray-600 rounded focus:outline-none"
+            [disabled]="pageIndex === 0"
+            (click)="previousPage()"
+          >
+            Previous
+          </button>
+          <span class="pagination-info text-gray-600">
+            Page {{ pageIndex + 1 }} of {{ totalPages }}
+          </span>
+          <button
+            class="pagination-button px-4 py-2 ml-2 bg-gray-300 text-gray-600 rounded focus:outline-none"
+            [disabled]="pageIndex === totalPages - 1"
+            (click)="nextPage()"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   </div>

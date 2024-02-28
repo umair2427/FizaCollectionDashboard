@@ -14,6 +14,7 @@
         <table class="w-full text-zinc-500">
           <tr class="bg-slate-100 h-12 border border-slate-200 shadow-sm">
             <th class="p-2 sm:p-0">Product</th>
+            <th class="p-2 sm:p-0">Color</th>
             <th class="p-2 sm:p-0">Price</th>
             <th class="p-2 sm:p-0">Quantity</th>
             <th class="p-2 sm:p-0">Discount</th>
@@ -32,6 +33,7 @@
                 </div>
               </div>
             </td>
+            <td>{{ order.colorName }}</td>
             <td>{{ order.productPrice }}</td>
             <td>{{ order.quantity}}</td>
             <td>{{ order.productDiscount}}%</td>
@@ -57,7 +59,7 @@
         </div>
       </div>
     </div>
-    <div class="lg:w-1/4 w-full mt-3 lg:mt-0">
+    <div class="lg:w-1/4 w-full mt-3 lg:mt-0 mb-5">
       <div class="bg-white shadow-sm py-3 rounded-sm">
         <h1 class="px-4 text-zinc-700 text-xl font-semibold pb-2 shadow-sm">
           Customer Details
@@ -194,7 +196,7 @@
           <p class="pt-2">{{shipping.country}}</p>
         </div>
       </div>
-      <div class="bg-white shadow-sm py-3 rounded-sm mt-4 mb-2">
+      <!-- <div class="bg-white shadow-sm py-3 rounded-sm mt-4 mb-2">
         <div class="border-b-2 border-slate-200">
           <div
             class="flex items-cente font-sans px-4 pt-2 pb-2 text-zinc-700 text-xl font-semibold shadow-sm"
@@ -223,7 +225,7 @@
           <div class="pt-2"><span class="text-zinc-900 mr-2">Card Number: </span><span class="text-sm">xxxx xxxx xxxx 2456</span></div>
           <div class="pt-2"><span class="text-zinc-900 mr-2">Total Amount: </span><span class="text-sm">Rs 15,967</span></div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </ion-content>
