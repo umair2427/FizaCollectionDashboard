@@ -161,8 +161,6 @@ export class AddProductPage implements OnInit {
   }
 
   getProductFormValue() {
-    console.log(this.addProductForm.value);
-
     if (this.addProductForm.invalid) {
       // Mark all form controls as touched to display the validation errors
       Object.values(this.addProductForm.controls).forEach(control => {

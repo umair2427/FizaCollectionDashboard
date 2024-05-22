@@ -9,10 +9,11 @@ import { RouterModule } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SelectProductsComponent } from '../components/select-products/select-products.component';
 import { ProfileComponent } from '../components/profile/profile.component';
+import { NotificationsComponent } from '../components/notifications/notifications.component';
 
 @NgModule({
-  declarations: [DeleteModalComponent, SelectProductsComponent, ProfileComponent],
-  exports: [DeleteModalComponent, SelectProductsComponent, ProfileComponent],
+  declarations: [DeleteModalComponent, SelectProductsComponent, ProfileComponent, NotificationsComponent],
+  exports: [DeleteModalComponent, SelectProductsComponent, ProfileComponent, NotificationsComponent],
   imports: [
     CommonModule,
     MatDialogModule,

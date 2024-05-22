@@ -81,4 +81,13 @@ export class OrderService {
         finalize(() => this.setLoading(false))
       )
   }
+
+  getNotifications(): Observable<any> {
+    this.setLoading(true);
+    return this.http.get<any>(`${environment.url}notifications`)
+      .pipe(
+        catchError(this.handleError),
+        finalize(() => this.setLoading(false))
+      )
+  }
 }
