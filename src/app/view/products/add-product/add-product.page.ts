@@ -39,7 +39,7 @@ export class AddProductPage implements OnInit {
   status: items[] = [];
   public message: string = '';
   public color: string = 'success';
-  public Editor = ClassicEditor;
+  public Editor: any = ClassicEditor;
   addProductForm!: FormGroup;
   constructor(
     private fb: FormBuilder,
