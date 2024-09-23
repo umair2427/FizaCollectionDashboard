@@ -17,6 +17,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 })
 export class ProductsPage implements OnInit {
   dialogRef!: MatDialogRef<DeleteModalComponent>;
+
   displayedColumns: string[] = [
     'check',
     'name',
@@ -24,22 +25,26 @@ export class ProductsPage implements OnInit {
     'createdAt',
     'action',
   ];
-  dataSource = new MatTableDataSource<Product>();
   pageSize: number = 10;
-  pageIndex:number = 0;
+  pageIndex: number = 0;
   totalItems: number = 0;
+
   radioPrice = null;
   radioDiscount = null;
+
   showDiscount: boolean = true;
   viewAction: boolean = false;
   removeProduct: boolean = false;
+  loader: boolean = false;
 
-  selectedProducts: Product[] = [];
+  selectedProducts: any[] = [];
+  filteredProducts: any;
+
+  dataSource = new MatTableDataSource<any>();
 
   @ViewChild(MatSort) sort!: MatSort;
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  filteredProducts: any;
+
   constructor(
     private _liveAnnouncer: LiveAnnouncer,
     private cdRef: ChangeDetectorRef,
@@ -55,21 +60,26 @@ export class ProductsPage implements OnInit {
     this.cdRef.detectChanges();
   }
   ngOnInit() {
-    this.getProducts(1, this.pageSize);
+    this.getProducts(this.pageIndex + 1, this.pageSize);
   }
 
-  // ionViewWillEnter(): void {
-  //   this.getProducts(1, this.pageSize);
-  // }
+  ionViewWillEnter() {
+    this.getProducts(this.pageIndex + 1, this.pageSize);
+  }
 
   getProducts(page: number, pageSize: number): void {
+    this.loader = true;
     this.productService.getProducts(page, pageSize).subscribe(
-      (data) => {
-        this.dataSource.data = data.products;
-        this.totalItems = data.totalCount;
+      (data: any) => {
+        if (data) { 
+          this.loader = false;
+          this.dataSource.data = data.products;
+          this.totalItems = data.totalProducts;
+        }
       },
       (error) => {
         console.error('Error:', error);
+        this.loader = false;
       }
     );
   }
@@ -78,7 +88,11 @@ export class ProductsPage implements OnInit {
     return Math.ceil(this.totalItems / this.pageSize);
   }
 
-  openDialog(productId: number) {
+  get isDataEmpty(): boolean {
+    return this.dataSource.filteredData.length === 0;
+  }
+
+  openDialog(productId: string) {
     this.dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: true,
       width: '400px',
@@ -88,7 +102,7 @@ export class ProductsPage implements OnInit {
     if (this.dialogRef) {
       this.dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.getProducts(1, this.pageSize);
+          this.getProducts(this.pageIndex + 1, this.pageSize);
         }
       });
     }
@@ -96,7 +110,7 @@ export class ProductsPage implements OnInit {
 
   navigateToProductDetail(productId?: number, url?: string) {
     if (productId) {
-      const selectedProduct = this.dataSource.data.find(product => product.id === productId);
+      const selectedProduct = this.dataSource.data.find(product => product._id === productId);
 
       if (selectedProduct) {
         if (url === 'update-product') {
@@ -107,7 +121,7 @@ export class ProductsPage implements OnInit {
         console.error('Product not found');
       }
     } else {
-      console.error('Product ID is undefined');
+      console.error('Product _id is undefined');
     }
   }
 
@@ -120,18 +134,29 @@ export class ProductsPage implements OnInit {
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+  
+    if (!filterValue) {
+      this.dataSource.filter = ''; 
+      return; 
+    }
+  
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      return data.productName.toLowerCase().includes(filter); 
+    };
+  
+    this.dataSource.filter = filterValue; 
   }
+  
+  
 
   priceFilter(event: any) {
     const selectedPrice = parseInt(event.target.value);
-    const customPriceFilter = (data: Product, filter: number) => {
+    const customPriceFilter = (data: any, filter: number) => {
       return (
         data.productPrice !== undefined &&
         data.productPrice >= filter &&
-        data.productPrice < filter + 500
+        data.productPrice < filter + 1000
       );
     };
     this.dataSource.filterPredicate = (data, filter) => {
@@ -156,10 +181,10 @@ export class ProductsPage implements OnInit {
   }
 
 
-  changeSelect(product: Product) {
+  changeSelect(product: any) {
     if (this.isSelected(product)) {
       this.selectedProducts = this.selectedProducts.filter(
-        (selectedProduct) => selectedProduct.id !== product.id
+        (selectedProduct) => selectedProduct._id !== product._id
       );
     } else {
       this.selectedProducts.push(product);
@@ -168,7 +193,7 @@ export class ProductsPage implements OnInit {
   }
 
   removeSelectedProducts(): void {
-    const selectedProductIds = this.selectedProducts.map(product => product.id);
+    const selectedProductIds = this.selectedProducts.map(product => product._id);
 
     if (selectedProductIds.length > 0) {
       this.dialogRef = this.dialog.open(DeleteModalComponent, {
@@ -188,9 +213,9 @@ export class ProductsPage implements OnInit {
     }
   }
 
-  isSelected(product: Product): boolean {
+  isSelected(product: any): boolean {
     return this.selectedProducts.some(
-      (selectedProduct) => selectedProduct.id === product.id
+      (selectedProduct) => selectedProduct._id === product._id
     );
   }
 

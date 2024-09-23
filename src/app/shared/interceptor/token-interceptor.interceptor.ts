@@ -54,7 +54,7 @@ export class TokenInterceptorInterceptor implements HttpInterceptor {
 
         let storedToken = localStorage.getItem('idToken');
         if (storedToken || newToken) {
-          const authReq = req.clone({ headers: req.headers.set('Authorization', `${storedToken ?? newToken}`) });
+          const authReq = req.clone({ headers: req.headers.set('Authorization', `Bearer ${storedToken ?? newToken}`) });
 
           return lastValueFrom(next.handle(authReq));
         }
@@ -64,7 +64,7 @@ export class TokenInterceptorInterceptor implements HttpInterceptor {
     } else {
       let storedToken = localStorage.getItem('idToken');
 
-      const authReq = req.clone({ headers: req.headers.set('Authorization', `${storedToken}`) });
+      const authReq = req.clone({ headers: req.headers.set('Authorization', `Bearer ${storedToken}`) });
       return lastValueFrom(next.handle(authReq));
     }
   }

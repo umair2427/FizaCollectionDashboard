@@ -11,30 +11,26 @@ import { ProductService } from 'src/app/shared/service/product/product.service';
 })
 export class ProductDetailsPage implements OnInit {
   selectedSegment = 'specification';
-  productId: number | null = null;
-  product: Product | null = null;
+  productId!: string;
+  product: any;
   loader: boolean = true;
   constructor(private route: ActivatedRoute,
     private productService: ProductService,) { }
   customOptions!: OwlOptions;
   ngOnInit() {
+    this.productId = this.route.snapshot.paramMap.get('id') || '';
     this.fetchProductDetails();
   }
 
   fetchProductDetails(): void {
-    this.route.params.subscribe(params => {
-      this.productId = +params['id'];
-      if (this.productId) {
-        this.productService.getProductById(this.productId).subscribe(
-          (product: any) => {
-            this.product = product.product;
-            this.loader = false;
-          },
-          error => {
-            console.error('Error fetching product details:', error);
-          }
-        );
+    this.productService.getProductById(this.productId).subscribe(
+      (product: any) => {
+        this.product = product.product;
+        this.loader = false;
+      },
+      error => {
+        console.error('Error fetching product details:', error);
       }
-    });
+    );
   }
 }

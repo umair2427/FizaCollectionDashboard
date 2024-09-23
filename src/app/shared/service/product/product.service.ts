@@ -41,9 +41,9 @@ export class ProductService {
     this.selectedProductSource.next(product);
   }
 
-  addProducts(FormData: FormData): Observable<any> {
+  addProducts(payload: any): Observable<any> {
     this.setLoading(true);
-    return this.http.post<any>(`${environment.url}addProduct`, FormData)
+    return this.http.post<any>(`${environment.url}addProduct`, payload)
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))
@@ -53,27 +53,27 @@ export class ProductService {
   getProducts(page: number, pageSize: number): Observable<{ products: Product[], totalCount: number }> {
     const params = new HttpParams()
       .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
+      .set('limit', pageSize.toString());
     this.setLoading(true);
-    return this.http.get<{ products: Product[], totalCount: number }>(`${environment.url}allProducts`, { params })
+    return this.http.get<{ products: Product[], totalCount: number }>(`${environment.url}getAllProducts`, { params })
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))
       )
   }
 
-  getProductById(id: number): Observable<{ product: Product }> {
+  getProductById(id: string): Observable<{ product: Product }> {
     this.setLoading(true);
-    return this.http.get<{ product: Product }>(`${environment.url}getSingleProduct/${id}`)
+    return this.http.get<{ product: Product }>(`${environment.url}products/${id}`)
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))
       )
   }
 
-  updateProduct(id: number, data: FormData): Observable<any> {
+  updateProduct(id: string, data: any): Observable<any> {
     this.setLoading(true);
-    return this.http.patch<any>(`${environment.url}updateProduct/${id}`, data)
+    return this.http.patch<any>(`${environment.url}products/${id}`, data)
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))
@@ -82,20 +82,23 @@ export class ProductService {
 
   deleteProduct(id: number): Observable<any> {
     this.setLoading(true);
-    return this.http.delete<any>(`${environment.url}deleteProduct/${id}`)
+    return this.http.delete<any>(`${environment.url}products/${id}`)
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))
       )
   }
 
-  deleteMultipleProducts(productIds: number[]): Observable<any> {
+  deleteMultipleProducts(productIds: any): Observable<any> {
+    console.log(productIds)
     this.setLoading(true);
-    return this.http.post<any>(`${environment.url}products/delete-multiple`, { productIds })
+    return this.http.request<any>('delete', `${environment.url}products`, {
+        body:  productIds ,
+      })
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))
-      )
+      );
   }
 
   getCategories(): Observable<items> {

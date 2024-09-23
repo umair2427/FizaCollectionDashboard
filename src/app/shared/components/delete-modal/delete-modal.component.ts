@@ -15,25 +15,25 @@ export class DeleteModalComponent implements OnInit {
   product: string = '';
   constructor(
     private dialogRef: MatDialogRef<DeleteModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { productId: number, selectedProductIds: number[], shipping_id: number, selectedOrderIds: number[] },
+    @Inject(MAT_DIALOG_DATA) public data: { productId: number, selectedProductIds: string[], shipping_id: number, selectedOrderIds: number[] },
     private productService: ProductService,
     private snackBar: MatSnackBar,
-    private orderService: OrderService) { }
+    private orderService: OrderService) { console.log(data)}
 
   ngOnInit() {
     this.isLoading$ = this.productService.isLoading$;
-    if(this.data.productId){
+    if (this.data.productId) {
       this.product = 'this product';
-    } else if(this.data.selectedProductIds){
+    } else if (this.data.selectedProductIds) {
       this.product = 'these products';
-    } else if (this.data.shipping_id){
+    } else if (this.data.shipping_id) {
       this.product = 'this order';
-    } else if(this.data.selectedOrderIds) {
+    } else if (this.data.selectedOrderIds) {
       this.product = 'these orders'
-    } else{
+    } else {
       console.log("Hello");
     }
-    }
+  }
 
   close() {
     this.dialogRef.close();
@@ -58,7 +58,7 @@ export class DeleteModalComponent implements OnInit {
   }
 
   deleteOrder(): void {
-    this.orderService.deleteOrder(this.data.productId).subscribe(
+    this.orderService.deleteOrder(this.data.shipping_id).subscribe(
       (data) => {
         this.snackBar.open(data.message, 'OK', {
           duration: 2000,
@@ -76,7 +76,10 @@ export class DeleteModalComponent implements OnInit {
   }
 
   deleteMultipleProducts(): void {
-    this.productService.deleteMultipleProducts(this.data.selectedProductIds).subscribe(
+    let payload = {
+      ids: this.data?.selectedProductIds
+    }
+    this.productService.deleteMultipleProducts(payload).subscribe(
       (data) => {
         this.snackBar.open(data.message, 'OK', {
           duration: 2000,
@@ -94,8 +97,6 @@ export class DeleteModalComponent implements OnInit {
   }
 
   deleteMultipleOrders(): void {
-    console.log(this.data.selectedOrderIds);
-
     this.orderService.deleteMultipleOrders(this.data.selectedOrderIds).subscribe(
       (data) => {
         this.snackBar.open(data.message, 'OK', {
@@ -113,16 +114,16 @@ export class DeleteModalComponent implements OnInit {
     );
   }
 
-  handleButtonClick(){
-    if(this.data.productId){
+  handleButtonClick() {
+    if (this.data.productId) {
       this.deleteProduct();
-    } else if(this.data.selectedProductIds){
+    } else if (this.data.selectedProductIds) {
       this.deleteMultipleProducts();
-    } else if(this.data.shipping_id){
+    } else if (this.data.shipping_id) {
       this.deleteOrder();
-    } else if(this.data.selectedOrderIds){
+    } else if (this.data.selectedOrderIds) {
       this.deleteMultipleOrders();
-    } else{
+    } else {
       console.error("Something bad happen");
     }
   }

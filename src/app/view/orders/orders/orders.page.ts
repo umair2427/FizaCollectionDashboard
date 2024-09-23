@@ -1,13 +1,15 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { OrderService } from 'src/app/shared/service/order/order.service';
 import { Router } from '@angular/router';
+import { skipWhile, take } from 'rxjs';
 import { DeleteModalComponent } from 'src/app/shared/components/delete-modal/delete-modal.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { OrderService } from 'src/app/shared/service/order/order.service';
 import { ProductService } from 'src/app/shared/service/product/product.service';
+import { EditOrderComponent } from '../model/edit-order/edit-order.component';
 
 interface items {
   id?: number;
@@ -24,9 +26,12 @@ export class OrdersPage implements OnInit {
   dialogRef!: MatDialogRef<DeleteModalComponent>;
   orders: any[] = [];
   deliveryStatus: items[] = [];
-  paymentMethod: items[] = [];
+  paymentMethod: string[] = ['COD', 'Bank Transfer'];
+  originalData: any[] = [];
+
+  page: number = 1;
   pageSize = 10;
-  pageIndex:number = 0;
+  pageIndex: number = 0;
   selectedOrders: any[] = [];
   totalItems: number = 0;
   constructor(
@@ -39,18 +44,13 @@ export class OrdersPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getOrderItems(1, this.pageSize);
-    this.showDeliveryStatus();
-    this.getPaymentMethod();
+    this.getOrderItems();
   }
   displayedColumns: string[] = [
-    'check',
     'order_id',
-    'products',
     'order_date',
     'amount',
     'paymentMethod',
-    'deliveryStatus',
     'action'
   ];
   removeProduct: boolean = false;
@@ -81,8 +81,18 @@ export class OrdersPage implements OnInit {
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+
+    if (!filterValue) {
+      this.dataSource.filter = '';
+      return;
+    }
+
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      return data.orderId.toLowerCase().includes(filter);
+    };
+
+    this.dataSource.filter = filterValue;
   }
 
   changeSelect(order: any) {
@@ -102,41 +112,33 @@ export class OrdersPage implements OnInit {
       (selectedProduct) => selectedProduct.shipping_id === order.shipping_id
     );
   }
-  selectedStatusFilter: number = 1;
-  selectedPaymentFilter: number = 1;
 
-  applyFilters() {
-    this.dataSource.data = this.dataSource.data.filter((order) => order.s_id === this.selectedStatusFilter && order.paymentMethod === this.selectedPaymentFilter)
+  applyFilters(event: any, data: any[]) {
+    const filterValue = event || '';
+
+    if (!filterValue.trim()) {
+
+      this.dataSource.data = [...data];
+    } else {
+
+      this.dataSource.data = data.filter((order: any) => {
+        return order.paymentMethod === filterValue;
+      });
+    }
   }
 
-  getOrderItems(page: number, pageSize: number) {
-    this.orderService.getOrders(page, pageSize).subscribe(
+
+  getOrderItems() {
+    this.orderService.getOrders(this.page, this.pageSize).pipe(skipWhile(val => !val), take(1)).subscribe(
       (response) => {
-        this.dataSource.data = response.orders;
-        this.totalItems = response.totalCount;
+        this.originalData = response.orders;
+        this.dataSource.data = this.originalData;
+        this.totalItems = response.pagination.totalOrders;
       },
       (error) => {
-        console.log(error);
+        console.error(error);
       }
     );
-  }
-
-  showDeliveryStatus() {
-    this.productService.getDeliveryStatus().subscribe((res: items) => {
-      this.deliveryStatus = res.data;
-    },
-      (error) => {
-        console.error('Error fetching status:', error);
-      })
-  }
-
-  getPaymentMethod() {
-    this.productService.getPaymentMethod().subscribe((res: items) => {
-      this.paymentMethod = res.data;
-    },
-      (error) => {
-        console.error('Error fetching status:', error);
-      })
   }
 
   navigateToProductDetail(productId?: number) {
@@ -157,7 +159,23 @@ export class OrdersPage implements OnInit {
     if (this.dialogRef) {
       this.dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.getOrderItems(1, this.pageSize);
+          this.getOrderItems();
+        }
+      });
+    }
+  }
+
+  openEditDialog(order: any) {
+    const dialogRef = this.dialog.open(EditOrderComponent, {
+      disableClose: true,
+      width: '50%',
+      height: 'auto',
+      data: { order }
+    });
+    if (dialogRef) {
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.getOrderItems();
         }
       });
     }
@@ -177,7 +195,7 @@ export class OrdersPage implements OnInit {
         this.dialogRef.afterClosed().subscribe(result => {
           if (result) {
             this.removeProduct = false;
-            this.getOrderItems(1, this.pageSize);
+            this.getOrderItems();
           }
         });
       }
@@ -186,15 +204,17 @@ export class OrdersPage implements OnInit {
 
   nextPage() {
     if (this.pageIndex < this.totalPages - 1) {
+      this.page++;
       this.pageIndex++;
-      this.getOrderItems(this.pageIndex + 1, this.pageSize);
+      this.getOrderItems();
     }
   }
 
   previousPage() {
     if (this.pageIndex > 0) {
+      this.page--;
       this.pageIndex--;
-      this.getOrderItems(this.pageIndex + 1, this.pageSize);
+      this.getOrderItems();
     }
   }
 }

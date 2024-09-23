@@ -44,19 +44,19 @@ export class OrderService {
       )
   }
 
-  getOrders(page: number, pageSize: number): Observable<any> {
+  getOrders(page: number, limit: number): Observable<any> {
     this.setLoading(true);
-    const params = new HttpParams().set('page', page.toString()).set('pageSize', pageSize.toString());
-    return this.http.get<any>(`${environment.url}getOrders`, { params })
+    const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
+    return this.http.get<any>(`${environment.url}orders`, { params })
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))
       )
   }
 
-  getSingleOrder(id: number): Observable<any> {
+  getSingleOrder(id: string): Observable<any> {
     this.setLoading(true);
-    return this.http.get<any>(`${environment.url}singleOrder/${id}`)
+    return this.http.get<any>(`${environment.url}order/${id}`)
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))
@@ -66,16 +66,25 @@ export class OrderService {
 
   deleteOrder(id: number): Observable<any> {
     this.setLoading(true);
-    return this.http.delete<any>(`${environment.url}deleteOrder/${id}`)
+    return this.http.delete<any>(`${environment.url}order/${id}`)
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))
       )
   }
 
-  deleteMultipleOrders(shippingIds: number[]): Observable<any> {
+  deleteMultipleOrders(ids: number[]): Observable<any> {
     this.setLoading(true);
-    return this.http.post<any>(`${environment.url}orders/delete-multiple`, { shippingIds })
+    return this.http.post<any>(`${environment.url}orders`, { ids })
+      .pipe(
+        catchError(this.handleError),
+        finalize(() => this.setLoading(false))
+      )
+  }
+
+  updateOrderStatus(payload: any): Observable<any> {
+    this.setLoading(true);
+    return this.http.patch<any>(`${environment.url}orderStatus`, payload)
       .pipe(
         catchError(this.handleError),
         finalize(() => this.setLoading(false))

@@ -71,8 +71,11 @@
                     <div class="h-full w-full flex justify-center items-center">
                       <img [src]="profile_preview" *ngIf="profile_preview" class="h-full w-full object-contain">
                       <div *ngIf="!profile_preview">
-                        <img class="h-[100px] w-[130px]"
-                          src="https://connectedhubs.ie/assets/core/images/placeholders/photo_placeholder.png" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                          stroke="currentColor" class="h-[100px] w-[130px] text-gray-500">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                        </svg>
                       </div>
                     </div>
                     <input id="dropzone-profile-image" type="file" accept="image/*"
@@ -98,8 +101,11 @@
                       <div class="h-full w-full flex justify-center items-center">
                         <img [src]="gallerySrcOne" *ngIf="gallerySrcOne" class="h-full w-full object-contain">
                         <div *ngIf="!gallerySrcOne">
-                          <img class="h-[100px] w-[130px]"
-                            src="https://connectedhubs.ie/assets/core/images/placeholders/photo_placeholder.png" />
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="h-[100px] w-[130px] text-gray-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                              d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                          </svg>
                         </div>
                       </div>
                       <input id="productGalleryImageOne" type="file" accept="image/*"
@@ -115,8 +121,11 @@
                       <div class="h-full w-full flex justify-center items-center">
                         <img [src]="gallerySrcTwo" *ngIf="gallerySrcTwo" class="h-full w-full object-contain">
                         <div *ngIf="!gallerySrcTwo">
-                          <img class="h-[100px] w-[130px]"
-                            src="https://connectedhubs.ie/assets/core/images/placeholders/photo_placeholder.png" />
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="h-[100px] w-[130px] text-gray-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                              d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                          </svg>
                         </div>
                       </div>
                       <input id="productGalleryImageTwo" type="file" accept="image/*"
@@ -138,7 +147,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1 w-full">Status:</label>
                 <ng-select placeholder="Select--"
                   class="lg:w-80 border rounded-md text-xs cursor-pointer text-gray-800 placeholder-gray-800"
-                  [items]="status" bindLabel="name" bindValue="id" formControlName="statusId">
+                  [items]="status" bindLabel="name" bindValue="id" formControlName="status">
                 </ng-select>
               </div>
             </div>
@@ -166,11 +175,11 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1 w-full">Select product category:</label>
                 <ng-select placeholder="Select--"
                   class="lg:w-80 border rounded-md text-xs cursor-pointer text-gray-800 placeholder-gray-800"
-                  [items]="categories" bindLabel="name" bindValue="id" formControlName="categoryId">
+                  [items]="categories" bindLabel="name" bindValue="id" formControlName="category">
                 </ng-select>
-                <div *ngIf="f['categoryId'].invalid && (f['categoryId'].dirty || f['categoryId'].touched)"
+                <div *ngIf="f['category'].invalid && (f['category'].dirty || f['category'].touched)"
                   class="text-xs text-red-500">
-                  <div *ngIf="f['categoryId'].errors?.['required']">
+                  <div *ngIf="f['category'].errors?.['required']">
                     Category is required.
                   </div>
                 </div>
@@ -214,10 +223,10 @@
         </div>
       </div>
       <div class="sm:text-end mt-3 px-2 sm:px-2 sm:w-2/3 w-full md:w-2/3 pb-3">
-        <button type="submit" [disabled]="addProductForm.invalid || (isLoading$ | async)"
-          class="bg-zinc-700 w-full flex items-center justify-center sm:w-52 sm:mr-4 text-white mr-0 sm:px-8 py-2 rounded-md transition hover:bg-zinc-600 duration-300">
+        <button type="submit" [disabled]="addProductForm.invalid || loader"
+          class="bg-zinc-700 w-full flex items-center justify-center sm:w-52 sm:mr-4 text-white mr-0 sm:px-8 py-2 rounded-md transition hover:bg-zinc-600 duration-300 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed">
           <span class="mr-2">Add Product</span>
-          <ion-spinner class="text-white" *ngIf="(isLoading$ | async)" name="crescent"></ion-spinner>
+          <ion-spinner class="text-white" *ngIf="loader" name="crescent"></ion-spinner>
         </button>
       </div>
     </div>

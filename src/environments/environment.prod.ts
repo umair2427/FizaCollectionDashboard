@@ -9,5 +9,14 @@ export const environment = {
     messagingSenderId: "737912997596",
     appId: "1:737912997596:web:1115dd3cbe761d5e8fd619",
     measurementId: "G-Z6ML3WZ43J"
-  }
+  },
+  url: 'https://fiza-noor-collection.vercel.app/api/',
+
+  cloudinary: {
+    cloudName: 'denuodqtw',
+    apiKey: '777191772778753',
+    apiSecret: 'hsOg-ldjplTC5oOpwT_Pdig1Fgg'
+  },
+  cloudinaryUrl: "https://api.cloudinary.com/v1_1",
+
 };

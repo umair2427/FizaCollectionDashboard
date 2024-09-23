@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 
 import { Auth } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,12 @@ import { Auth } from '@angular/fire/auth';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+  message!: string;
+  color!: string;
+
+  isLoading$!: Observable<boolean>;
+
+
   constructor(
     @Optional() private auth: Auth,
     private fb: FormBuilder,
@@ -26,28 +33,47 @@ export class LoginPage implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
+
+    this.isLoading$ = this.authService.isLoading$;
   }
   // convenience getter for easy access to form fields
   get f() {
     return this.loginForm.controls;
   }
 
-  ionViewWillEnter(): void{
+  ionViewWillEnter(): void {
     this.loginForm.reset();
   }
 
-  async login() {
-    const email = this.loginForm.value.email;
-    const password = this.loginForm.value.password;
-    await this.authService.login(email, password);
+  onSubmit() {
+    const {
+      email,
+      password
+    } = this.loginForm.value;
+    this.authService.login(email, password).then(
+      (res: any) => {
+        if (res) {
+          this.router.navigate(['/products'])
+          this.message = 'You are successfully login'
+          this.color = 'success';
+          this.loginForm.reset();
+          this.presentToast('top');
+        } else {
+          this.message = 'Something went wrong! Please enter valid email or password';
+          this.color = 'danger';
+          this.presentToast('top');
+        }
+      }
+    )
   }
 
   async presentToast(position: any) {
     const toast = await this.toastController.create({
-      message: 'Please enter valid email or password',
+      message: this.message,
       duration: 1500,
       position: position,
-      color: 'danger'
+      color: this.color,
+      cssClass: 'text-center'
     });
 
     await toast.present();

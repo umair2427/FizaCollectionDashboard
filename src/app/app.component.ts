@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
           this.showHeader = event.url !== '/' && event.url !== '/login';
         }
       });
-    this.socket = io.connect('http://localhost:3000', { transports: ['websocket', 'polling', 'flashsocket'] });
+    this.socket = io.connect('http://localhost:3000', { transports: ['websocket'] });
     this.notificationService.notifications$.subscribe(count => {
       this.notificationCount = count;
     });
@@ -56,16 +56,20 @@ export class AppComponent implements OnInit {
       console.log('Connected to server');
     });
 
-    this.socket.on('newOrder', (message: string) => {
+    this.socket.on('notification', (message: string) => {
       console.log('Received notification:', message);
       this.notificationService.addNotification();
-      // Handle the notification
     });
 
     this.socket.on('disconnect', () => {
       console.log('Disconnected from server');
     });
+
+    this.socket.on('error', (error: any) => {
+      console.error('Socket error:', error);
+    });
   }
+
 
   openDialog(): void {
     const dialogRef = this.dialog.open(NotificationsComponent, {
@@ -76,7 +80,6 @@ export class AppComponent implements OnInit {
     this.markAsRead();
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
     });
   }
 

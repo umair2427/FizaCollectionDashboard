@@ -1,0 +1,31 @@
+<div class="pb-3">
+  <div class="flex justify-end p-3">
+    <div class="hover:rounded-full hover:bg-gray-200 p-2 cursor-pointer" (click)="close()">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </div>
+  </div>
+  <div class="text-lg md:text-2xl font-semibold leading-7 text-gray-900 mb-4 px-3"> Edit Order
+  </div>
+
+  <div class="px-3">
+    <ng-select placeholder="Select--"
+      class="md:w-full border rounded-xl text-xs cursor-pointer text-gray-800 placeholder-gray-400" [(ngModel)]="selectedStatus" [items]="statues">
+    </ng-select>
+  </div>
+
+  <div class="flex justify-end items-center gap-x-2 p-3">
+    <button type="button" [disabled]="loader"
+      class="text-md font-semibold leading-6 hover:text-primary-600 text-gray-500 bg-gray-50 px-3.5 py-2 rounded-lg transition duration-300">Discard</button>
+    <button type="submit" [disabled]="loader" (click)="onSubmit()"
+      class="flex items-center gap-x-2 rounded-lg bg-gray-700 text-sm px-3.5 py-2 font-semibold text-white shadow-sm hover:bg-gray-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed">
+      Update Status
+      <div *ngIf="loader"
+        class="animate-spin inline-block size-6 h-5 w-5 border-[3px] border-current border-t-transparent text-gray-400 rounded-full pl-1"
+        role="status" aria-label="loading">
+      </div>
+    </button>
+  </div>
+</div>

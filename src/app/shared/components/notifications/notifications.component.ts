@@ -17,7 +17,7 @@ export class NotificationsComponent implements OnInit {
 
   getNotifications() {
     this.orderService.getNotifications().pipe(skipWhile(val => !val), take(1)).subscribe(res => {
-      this.notifications = res?.notifications
+      this.notifications = res?.notifications;
     })
   }
 

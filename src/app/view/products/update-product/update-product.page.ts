@@ -8,7 +8,8 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { Observable } from 'rxjs';
+import { Observable, skipWhile, take } from 'rxjs';
+import { CloudinaryUploadService } from 'src/app/shared/service/cloudinary/cloudinary.service';
 import { ProductService } from 'src/app/shared/service/product/product.service';
 
 interface items {
@@ -25,27 +26,34 @@ export class UpdateProductPage implements OnInit {
   profile_preview: any = '';
   gallerySrcOne: any;
   gallerySrcTwo: any;
+
   is_not_image_message = '';
   is_not_image_message1 = '';
   is_not_image_message2 = '';
-  isImage: boolean[] = [true, true];
-  isImage1: boolean[] = [true, true];
-  isImage2: boolean[] = [true, true];
-  filesToUpload: Array<File> = [];
-  isLoading$!: Observable<boolean>;
-  categories: items[] = [];
-  status: items[] = [];
-  productId: number | null = null;
+  productId!: string;
   public message: string = '';
   public color: string = 'success';
 
+  isImage: boolean[] = [true, true];
+  isImage1: boolean[] = [true, true];
+  isImage2: boolean[] = [true, true];
+  loader: boolean = false;
+
+  filesToUpload: Array<File> = [];
+  isLoading$!: Observable<boolean>;
+
+  categories: string[] = ['Top', '2 Piece Suit', '3 Piece Suit', 'Flapper', 'Jeans', 'Capri', 'Trouser', 'Lehnga', 'Dupatta', 'Thigts'];
+  status: string[] = ['Published', 'Draft'];
+
   editProductForm!: FormGroup;
+
   constructor(
     private fb: FormBuilder,
     private toastController: ToastController,
     private productService: ProductService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cloudinaryService: CloudinaryUploadService
   ) { }
 
   ngOnInit() {
@@ -66,7 +74,7 @@ export class UpdateProductPage implements OnInit {
         '',
         [Validators.required],
       ],
-      categoryId: ['', [Validators.required]],
+      category: [null, [Validators.required]],
       productPrice: ['', [Validators.required, this.greaterThanZeroWithoutLeadingZero]],
       productDiscount: [
         '',
@@ -74,26 +82,37 @@ export class UpdateProductPage implements OnInit {
         this.discountValueValidator
         ],
       ],
-      statusId: ['', [Validators.required]]
+      status: [null, [Validators.required]]
     });
 
     this.isLoading$ = this.productService.isLoading$;
-    this.showCategories();
-    this.showStatus();
-
-    this.productService.selectedProduct$.subscribe(selectedProduct => {
-      if (selectedProduct) {
-        this.editProductForm.patchValue({
-          productName: selectedProduct.productName,
-          productDescription: selectedProduct.productDescription,
-          productDateTime: selectedProduct.productDateTime,
-          categoryId: selectedProduct.categoryId,
-          productPrice: selectedProduct.productPrice,
-          productDiscount: selectedProduct.productDiscount,
-          statusId: selectedProduct.statusId,
-        })
+    this.productId = this.route.snapshot.paramMap.get('id') || '';
+    this.productService.getProductById(this.productId).pipe(skipWhile(val => !val), take(1)).subscribe(
+      res => {
+        if (res) {
+          this.onUpdate(res?.product);
+        }
       }
+    )
+  }
+
+
+  onUpdate(res: any) {
+    this.editProductForm.patchValue({
+      productName: res?.productName,
+      productDescription: res?.productDescription,
+      productDateTime: res?.productDateTime,
+      category: res?.category,
+      productPrice: res?.productPrice,
+      productDiscount: res?.productDiscount,
+      status: res?.status,
+      productMainImage: res?.productMainImage,
+      productGalleryImageOne: res?.productGalleryImageOne,
+      productGalleryImageTwo: res?.productGalleryImageTwo
     });
+    this.profile_preview = res?.productMainImage;
+    this.gallerySrcOne = res?.productGalleryImageOne;
+    this.gallerySrcTwo = res?.productGalleryImageTwo;
   }
 
   greaterThanZeroWithoutLeadingZero(control: AbstractControl): { [key: string]: any } | null {
@@ -198,7 +217,7 @@ export class UpdateProductPage implements OnInit {
     }
   }
 
-  getProductFormValue() {
+  async getProductFormValue() {
     if (this.editProductForm.invalid) {
       // Mark all form controls as touched to display the validation errors
       Object.values(this.editProductForm.controls).forEach(control => {
@@ -208,53 +227,51 @@ export class UpdateProductPage implements OnInit {
       this.color = 'danger';
       this.presentToast('top');
     } else {
-      let formData: FormData = new FormData();
+      this.loader = true;
+      console.log(this.profile_preview);
+      let productMainImage;
+      let productGalleryImageOne;
+      let productGalleryImageTwo;
+      if (this.profile_preview.startsWith('data')) {
+        productMainImage = await this.cloudinaryService.uploadFiles(this.editProductForm.get('productMainImage')?.value, 'product');
+      }
+      if (this.gallerySrcOne.startsWith('data')) {
+        productGalleryImageOne = await this.cloudinaryService.uploadFiles(this.editProductForm.get('productGalleryImageOne')?.value, 'product');
+      }
+      if (this.gallerySrcTwo.startsWith('data')) {
+        productGalleryImageTwo = await this.cloudinaryService.uploadFiles(this.editProductForm.get('productGalleryImageTwo')?.value, 'product');
+      }
+      this.loader = false;
+      let payload =
+      {
+        productMainImage: productMainImage?.secure_url ? productMainImage?.secure_url : this.profile_preview,
+        productGalleryImageOne: productGalleryImageOne?.secure_url ? productGalleryImageOne?.secure_url : this.gallerySrcOne,
+        productGalleryImageTwo: productGalleryImageTwo?.secure_url ? productGalleryImageTwo?.secure_url : this.gallerySrcTwo,
+        productName: this.editProductForm.get('productName')?.value,
+        productDescription: this.editProductForm.get('productDescription')?.value,
+        productPrice: this.editProductForm.get('productPrice')?.value,
+        category: this.editProductForm.get('category')?.value,
+        status: this.editProductForm.get('status')?.value,
+        productDiscount: this.editProductForm.get('productDiscount')?.value,
+        productDateTime: this.editProductForm.get('productDateTime')?.value
+      }
 
-      const editProductForm = this.editProductForm.value;
-
-      Object.keys(editProductForm).forEach(key => {
-        formData.append(key, editProductForm[key]);
-      });
-
-      this.route.params.subscribe(params => {
-        this.productId = +params['id'];
-        if (this.productId) {
-          this.productService.updateProduct(this.productId, formData).subscribe(
-            response => {
-              this.message = response.message || '';
-              this.color = 'success';
-              this.presentToast('top');
-              this.editProductForm.reset();
-              this.router.navigate(['products']);
-            },
-            error => {
-              console.error('Error:', error);
-              this.message = error;
-              this.color = 'danger';
-              this.presentToast('top');
-            }
-          )
+      this.productService.updateProduct(this.productId, payload).subscribe(
+        response => {
+          this.message = response.message || '';
+          this.color = 'success';
+          this.presentToast('top');
+          this.editProductForm.reset();
+          this.router.navigate(['products']);
+        },
+        error => {
+          console.error('Error:', error);
+          this.message = error;
+          this.color = 'danger';
+          this.presentToast('top');
         }
-      });
+      )
     }
-  }
-
-  showCategories() {
-    this.productService.getCategories().subscribe((res: any) => {
-      this.categories = res.data;
-    },
-      (error) => {
-        console.error('Error fetching categories:', error);
-      })
-  }
-
-  showStatus() {
-    this.productService.getStatus().subscribe((res: any) => {
-      this.status = res.data;
-    },
-      (error) => {
-        console.error('Error fetching status:', error);
-      })
   }
 
   numberOnly(event: any): boolean {

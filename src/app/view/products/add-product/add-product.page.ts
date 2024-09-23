@@ -1,22 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormArray,
   FormBuilder,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
-import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { ProductService } from 'src/app/shared/service/product/product.service';
-import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { ToastController } from '@ionic/angular';
+import { CloudinaryUploadService } from 'src/app/shared/service/cloudinary/cloudinary.service';
+import { ProductService } from 'src/app/shared/service/product/product.service';
 
-interface items {
-  id?: number;
-  name?: string;
-}
 
 @Component({
   selector: 'app-add-product',
@@ -27,25 +21,32 @@ export class AddProductPage implements OnInit {
   profile_preview: any = '';
   gallerySrcOne: any;
   gallerySrcTwo: any;
+
   is_not_image_message = '';
   is_not_image_message1 = '';
   is_not_image_message2 = '';
+  public color: string = 'success';
+  public message: string = '';
+
   isImage: boolean[] = [true, true];
   isImage1: boolean[] = [true, true];
   isImage2: boolean[] = [true, true];
   filesToUpload: Array<File> = [];
-  isLoading$!: Observable<boolean>;
-  categories: items[] = [];
-  status: items[] = [];
-  public message: string = '';
-  public color: string = 'success';
+  categories: string[] = ['Top', '2 Piece Suit', '3 Piece Suit', 'Flapper', 'Jeans', 'Capri', 'Trouser', 'Lehnga', 'Dupatta', 'Thigts'];
+  status: string[] = ['Published', 'Draft'];
+
+  loader: boolean = false;
+
   public Editor: any = ClassicEditor;
+
   addProductForm!: FormGroup;
+
   constructor(
     private fb: FormBuilder,
     private toastController: ToastController,
     private productService: ProductService,
-    private router: Router
+    private router: Router,
+    private cloudinaryService: CloudinaryUploadService
   ) { }
 
   ngOnInit() {
@@ -66,7 +67,7 @@ export class AddProductPage implements OnInit {
         '',
         [Validators.required],
       ],
-      categoryId: ['', [Validators.required]],
+      category: [null, [Validators.required]],
       productPrice: ['', [Validators.required, this.greaterThanZeroWithoutLeadingZero]],
       productDiscount: [
         '',
@@ -74,12 +75,9 @@ export class AddProductPage implements OnInit {
         this.discountValueValidator
         ],
       ],
-      statusId: ['', [Validators.required]]
+      status: [null, [Validators.required]]
     });
 
-    this.isLoading$ = this.productService.isLoading$;
-    this.showCategories();
-    this.showStatus();
   }
   greaterThanZeroWithoutLeadingZero(control: AbstractControl): { [key: string]: any } | null {
     const value = control.value;
@@ -160,7 +158,7 @@ export class AddProductPage implements OnInit {
     }
   }
 
-  getProductFormValue() {
+  async getProductFormValue() {
     if (this.addProductForm.invalid) {
       // Mark all form controls as touched to display the validation errors
       Object.values(this.addProductForm.controls).forEach(control => {
@@ -170,48 +168,45 @@ export class AddProductPage implements OnInit {
       this.color = 'danger';
       this.presentToast('top');
     } else {
-      let formData: FormData = new FormData();
+      this.loader = true;
+      const productMainImage = await this.cloudinaryService.uploadFiles(this.addProductForm.get('productMainImage')?.value, 'product');
+      const productGalleryImageOne = await this.cloudinaryService.uploadFiles(this.addProductForm.get('productGalleryImageOne')?.value, 'product');
+      const productGalleryImageTwo = await this.cloudinaryService.uploadFiles(this.addProductForm.get('productGalleryImageTwo')?.value, 'product');
 
-      const addProductForm = this.addProductForm.value;
+      let payload =
+      {
+        productMainImage: productMainImage.secure_url,
+        productGalleryImageOne: productGalleryImageOne.secure_url,
+        productGalleryImageTwo: productGalleryImageTwo.secure_url,
+        productName: this.addProductForm.get('productName')?.value,
+        productDescription: this.addProductForm.get('productDescription')?.value,
+        productPrice: this.addProductForm.get('productPrice')?.value,
+        category: this.addProductForm.get('category')?.value,
+        status: this.addProductForm.get('status')?.value,
+        productDiscount: this.addProductForm.get('productDiscount')?.value,
+        productDateTime: this.addProductForm.get('productDateTime')?.value
+      }
 
-      Object.keys(addProductForm).forEach(key => {
-        formData.append(key, addProductForm[key]);
-      });
-
-      this.productService.addProducts(formData).subscribe(
+      this.productService.addProducts(payload).subscribe(
         response => {
-          this.message = response.message || '';
-          this.color = 'success';
-          this.presentToast('top');
-          this.addProductForm.reset();
-          this.router.navigate(['products']);
+          if (response) {
+            this.loader = false;
+            this.message = response.message || '';
+            this.color = 'success';
+            this.presentToast('top');
+            this.addProductForm.reset();
+            this.router.navigate(['products']);
+          }
         },
         error => {
           console.error('Error:', error);
+          this.loader = false;
           this.message = error;
           this.color = 'danger';
           this.presentToast('top');
         }
       )
     }
-  }
-
-  showCategories() {
-    this.productService.getCategories().subscribe((res: any) => {
-      this.categories = res.data;
-    },
-      (error) => {
-        console.error('Error fetching categories:', error);
-      })
-  }
-
-  showStatus() {
-    this.productService.getStatus().subscribe((res: any) => {
-      this.status = res.data;
-    },
-      (error) => {
-        console.error('Error fetching status:', error);
-      })
   }
 
   numberOnly(event: any): boolean {
