@@ -10,7 +10,8 @@ export const environment = {
     appId: "1:737912997596:web:1115dd3cbe761d5e8fd619",
     measurementId: "G-Z6ML3WZ43J"
   },
-  url: 'https://fiza-noor-collection.vercel.app/api/',
+  // url: 'https://fiza-noor-collection.vercel.app/api/',
+  url: 'https://localhost:3000/api/',
 
   cloudinary: {
     cloudName: 'denuodqtw',

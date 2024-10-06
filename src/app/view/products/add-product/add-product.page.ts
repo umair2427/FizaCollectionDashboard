@@ -35,9 +35,15 @@ export class AddProductPage implements OnInit {
   categories: string[] = ['Top', '2 Piece Suit', '3 Piece Suit', 'Flapper', 'Jeans', 'Capri', 'Trouser', 'Lehnga', 'Dupatta', 'Thigts'];
   status: string[] = ['Published', 'Draft'];
 
+  selectedColors: string[] = [];
+  images: string[] = [];
+
   loader: boolean = false;
 
   public Editor: any = ClassicEditor;
+
+  hoveredCard: number = -1;
+  maxImages: number = 5;
 
   addProductForm!: FormGroup;
 
@@ -61,8 +67,6 @@ export class AddProductPage implements OnInit {
       ],
       productDescription: ['', [Validators.required]],
       productMainImage: [null, [Validators.required]],
-      productGalleryImageOne: [null, [Validators.required]],
-      productGalleryImageTwo: [null, [Validators.required]],
       productDateTime: [
         '',
         [Validators.required],
@@ -103,16 +107,6 @@ export class AddProductPage implements OnInit {
   uploadImage(event: any, identifier: string): void {
     const file = event.target.files[0];
     this.handleImage(file, identifier, 0);
-  }
-
-  galleryOne(event: any, identifier: string): void {
-    const file = event.target.files[0];
-    this.handleImage(file, identifier, 1);
-  }
-
-  galleryTwo(event: any, identifier: string): void {
-    const file = event.target.files[0];
-    this.handleImage(file, identifier, 2);
   }
 
   private handleImage(file: File, identifier: string, index: number): void {
@@ -158,6 +152,41 @@ export class AddProductPage implements OnInit {
     }
   }
 
+  onColorChange(event: any, color: string) {
+    if (event.target.checked) {
+      this.selectedColors.push(color);
+    } else {
+      this.selectedColors = this.selectedColors.filter(c => c !== color);
+    }
+  }
+
+  onFileSelected(event: any) {
+    const files: FileList = event.target.files;
+
+    if (this.images.length + files.length > this.maxImages) {
+      alert(`You can only add maximum 5 images.`);
+      return;
+    }
+
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = (e: any) => {
+          this.images.push(e.target.result);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
+  }
+
+
+  removeImage(index: number) {
+    this.images.splice(index, 1);
+  }
+
   async getProductFormValue() {
     if (this.addProductForm.invalid) {
       // Mark all form controls as touched to display the validation errors
@@ -168,23 +197,35 @@ export class AddProductPage implements OnInit {
       this.color = 'danger';
       this.presentToast('top');
     } else {
+      let productGalleryImages: string[] = [];
       this.loader = true;
       const productMainImage = await this.cloudinaryService.uploadFiles(this.addProductForm.get('productMainImage')?.value, 'product');
-      const productGalleryImageOne = await this.cloudinaryService.uploadFiles(this.addProductForm.get('productGalleryImageOne')?.value, 'product');
-      const productGalleryImageTwo = await this.cloudinaryService.uploadFiles(this.addProductForm.get('productGalleryImageTwo')?.value, 'product');
+
+      if (this.images.length > 5) {
+        this.message = 'You can only upload up to 5 images';
+        this.color = 'danger';
+        this.loader = false;
+        this.presentToast('top');
+        return;
+      }
+
+      for (let i = 0; i < this.images.length; i++) {
+        const uploadedImage = await this.cloudinaryService.uploadFiles(this.images[i], 'product');
+        productGalleryImages.push(uploadedImage.secure_url);
+      }
 
       let payload =
       {
         productMainImage: productMainImage.secure_url,
-        productGalleryImageOne: productGalleryImageOne.secure_url,
-        productGalleryImageTwo: productGalleryImageTwo.secure_url,
+        productGalleryImages: productGalleryImages,
         productName: this.addProductForm.get('productName')?.value,
         productDescription: this.addProductForm.get('productDescription')?.value,
         productPrice: this.addProductForm.get('productPrice')?.value,
         category: this.addProductForm.get('category')?.value,
         status: this.addProductForm.get('status')?.value,
         productDiscount: this.addProductForm.get('productDiscount')?.value,
-        productDateTime: this.addProductForm.get('productDateTime')?.value
+        productDateTime: this.addProductForm.get('productDateTime')?.value,
+        colors: this.selectedColors
       }
 
       this.productService.addProducts(payload).subscribe(

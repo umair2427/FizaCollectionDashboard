@@ -42,6 +42,12 @@ export class UpdateProductPage implements OnInit {
   filesToUpload: Array<File> = [];
   isLoading$!: Observable<boolean>;
 
+  images: string[] = [];
+  selectedColors: string[] = [];
+
+  hoveredCard: number = -1;
+  maxImages: number = 5;
+
   categories: string[] = ['Top', '2 Piece Suit', '3 Piece Suit', 'Flapper', 'Jeans', 'Capri', 'Trouser', 'Lehnga', 'Dupatta', 'Thigts'];
   status: string[] = ['Published', 'Draft'];
 
@@ -68,8 +74,6 @@ export class UpdateProductPage implements OnInit {
       ],
       productDescription: ['', [Validators.required]],
       productMainImage: [null, [Validators.required]],
-      productGalleryImageOne: [null, [Validators.required]],
-      productGalleryImageTwo: [null, [Validators.required]],
       productDateTime: [
         '',
         [Validators.required],
@@ -107,12 +111,11 @@ export class UpdateProductPage implements OnInit {
       productDiscount: res?.productDiscount,
       status: res?.status,
       productMainImage: res?.productMainImage,
-      productGalleryImageOne: res?.productGalleryImageOne,
-      productGalleryImageTwo: res?.productGalleryImageTwo
     });
     this.profile_preview = res?.productMainImage;
-    this.gallerySrcOne = res?.productGalleryImageOne;
-    this.gallerySrcTwo = res?.productGalleryImageTwo;
+    this.images = res.productGalleryImages
+
+    this.patchSelectedColors(res.colors);
   }
 
   greaterThanZeroWithoutLeadingZero(control: AbstractControl): { [key: string]: any } | null {
@@ -164,16 +167,6 @@ export class UpdateProductPage implements OnInit {
     this.handleImage(file, identifier, 0);
   }
 
-  galleryOne(event: any, identifier: string): void {
-    const file = event.target.files[0];
-    this.handleImage(file, identifier, 1);
-  }
-
-  galleryTwo(event: any, identifier: string): void {
-    const file = event.target.files[0];
-    this.handleImage(file, identifier, 2);
-  }
-
   private handleImage(file: File, identifier: string, index: number): void {
     const allowedFormats = ['image/jpeg', 'image/jpg', 'image/png'];
 
@@ -185,12 +178,6 @@ export class UpdateProductPage implements OnInit {
         if (identifier === 'productMainImage') {
           this.isImage[0] = true;
           this.profile_preview = _event.target.result;
-        } else if (identifier === 'productGalleryImageOne') {
-          this.isImage1[0] = true;
-          this.gallerySrcOne = _event.target.result;
-        } else if (identifier === 'productGalleryImageTwo') {
-          this.isImage2[0] = true;
-          this.gallerySrcTwo = _event.target.result;
         }
       };
 
@@ -201,12 +188,6 @@ export class UpdateProductPage implements OnInit {
       if (identifier === 'productMainImage') {
         this.isImage[0] = false;
         this.profile_preview = null;
-      } else if (identifier === 'productGalleryImageOne') {
-        this.isImage1[0] = false;
-        this.gallerySrcOne = null;
-      } else if (identifier === 'productGalleryImageTwo') {
-        this.isImage2[0] = false;
-        this.gallerySrcTwo = null;
       }
       this.editProductForm.get(identifier)?.setValue(null);
       if (!file) {
@@ -215,6 +196,45 @@ export class UpdateProductPage implements OnInit {
         this.is_not_image_message = 'Only JPEG, JPG, and PNG file formats are allowed';
       }
     }
+  }
+
+  onColorChange(event: any, color: string) {
+    if (event.target.checked) {
+      this.selectedColors.push(color);
+    } else {
+      this.selectedColors = this.selectedColors.filter(c => c !== color);
+    }
+  }
+
+  patchSelectedColors(colors: string[]) {
+    this.selectedColors = colors;
+  }
+
+  onFileSelected(event: any) {
+    const files: FileList = event.target.files;
+
+    if (this.images.length + files.length > this.maxImages) {
+      alert(`You can only add maximum 5 images.`);
+      return;
+    }
+
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = (e: any) => {
+          this.images.push(e.target.result);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
+  }
+
+
+  removeImage(index: number) {
+    this.images.splice(index, 1);
   }
 
   async getProductFormValue() {
@@ -228,32 +248,45 @@ export class UpdateProductPage implements OnInit {
       this.presentToast('top');
     } else {
       this.loader = true;
-      console.log(this.profile_preview);
       let productMainImage;
-      let productGalleryImageOne;
-      let productGalleryImageTwo;
       if (this.profile_preview.startsWith('data')) {
         productMainImage = await this.cloudinaryService.uploadFiles(this.editProductForm.get('productMainImage')?.value, 'product');
       }
-      if (this.gallerySrcOne.startsWith('data')) {
-        productGalleryImageOne = await this.cloudinaryService.uploadFiles(this.editProductForm.get('productGalleryImageOne')?.value, 'product');
+
+      const productGalleryImages: string[] = [];
+      const nonDataImages: string[] = [];
+
+      const allDataImages = this.images.every(image => image.startsWith('data'));
+
+      if (allDataImages) {
+        for (let i = 0; i < this.images.length; i++) {
+          const uploadedImage = await this.cloudinaryService.uploadFiles(this.images[i], 'product');
+          productGalleryImages.push(uploadedImage.secure_url);
+        }
+      } else {
+        for (let i = 0; i < this.images.length; i++) {
+          if (this.images[i].startsWith('data')) {
+            const uploadedImage = await this.cloudinaryService.uploadFiles(this.images[i], 'product');
+            productGalleryImages.push(uploadedImage.secure_url);
+          } else {
+            nonDataImages.push(this.images[i]);
+          }
+        }
       }
-      if (this.gallerySrcTwo.startsWith('data')) {
-        productGalleryImageTwo = await this.cloudinaryService.uploadFiles(this.editProductForm.get('productGalleryImageTwo')?.value, 'product');
-      }
+      const combineImages = productGalleryImages.concat(nonDataImages);
       this.loader = false;
       let payload =
       {
         productMainImage: productMainImage?.secure_url ? productMainImage?.secure_url : this.profile_preview,
-        productGalleryImageOne: productGalleryImageOne?.secure_url ? productGalleryImageOne?.secure_url : this.gallerySrcOne,
-        productGalleryImageTwo: productGalleryImageTwo?.secure_url ? productGalleryImageTwo?.secure_url : this.gallerySrcTwo,
+        productGalleryImages: combineImages,
         productName: this.editProductForm.get('productName')?.value,
         productDescription: this.editProductForm.get('productDescription')?.value,
         productPrice: this.editProductForm.get('productPrice')?.value,
         category: this.editProductForm.get('category')?.value,
         status: this.editProductForm.get('status')?.value,
         productDiscount: this.editProductForm.get('productDiscount')?.value,
-        productDateTime: this.editProductForm.get('productDateTime')?.value
+        productDateTime: this.editProductForm.get('productDateTime')?.value,
+        colors: this.selectedColors
       }
 
       this.productService.updateProduct(this.productId, payload).subscribe(

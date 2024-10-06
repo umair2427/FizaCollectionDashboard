@@ -31,7 +31,7 @@
             </div>
             <div>
               <label for="description" class="block mt-5 mb-2 text-zinc-500 font-semibold">Product Description</label>
-              <ckeditor maxlength="250" name="myckeditor" debounce="300" [config]="
+              <ckeditor name="myckeditor" debounce="300" [config]="
         {
           toolbar: {
             items: [
@@ -56,6 +56,72 @@
                 </div>
               </div>
             </div>
+            <div>
+              <label class="block my-2 text-zinc-500 font-semibold">Product Colors</label>
+              <div class="flex justify-between items-center w-[50%] mx-auto">
+                <div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Black')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Black</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Green')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Green</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Blue')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Blue</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Mehroon')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Mehroon</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'White')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">White</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Pink')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Pink</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Pista')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Pista</label>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Purple')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Purple</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Henna(Mehndi)')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Henna(Mehndi)</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Yellow')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Yellow</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Orange')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Orange</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Master')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Master</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Brown')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Brown</label>
+                  </div>
+                  <div class="flex items-center gap-x-2">
+                    <input type="checkbox" (change)="onColorChange($event, 'Navy Blue')">
+                    <label class="block my-2 text-zinc-400 font-semibold text-sm">Navy Blue</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
           </div>
           <div class="mb-5 shadow-md bg-white rounded-sm">
             <p class="text-zinc-500 font-semibold px-5 py-4">Product Gallery</p>
@@ -93,46 +159,21 @@
                 </p>
                 <p class="text-zinc-400 text-sm">Add Product Gallery Images</p>
               </div>
-              <div class="block sm:flex sm:justify-between sm:flex-nowrap mt-2 sm:w-1/2 sm:mx-auto w-full">
-                <div class="mb-2 sm:mb-0 sm:mr-2">
-                  <div class="flex justify-center items-center">
-                    <label for="productGalleryImageOne"
-                      class="flex flex-col justify-center items-center w-full h-40 rounded-lg cursor-pointer ">
-                      <div class="h-full w-full flex justify-center items-center">
-                        <img [src]="gallerySrcOne" *ngIf="gallerySrcOne" class="h-full w-full object-contain">
-                        <div *ngIf="!gallerySrcOne">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="h-[100px] w-[130px] text-gray-500">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                              d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                          </svg>
-                        </div>
-                      </div>
-                      <input id="productGalleryImageOne" type="file" accept="image/*"
-                        (change)="galleryOne($event, 'productGalleryImageOne')" class="hidden">
-                    </label>
+              <div class="flex flex-wrap gap-4 items-center my-4">
+                <div *ngFor="let img of images; let i = index" (mouseenter)="hoveredCard = i" (mouseleave)="hoveredCard = -1" class="relative">
+                  <img [src]="img" alt="Uploaded Image {{ i }}" class="w-[150px] h-[150px] object-cover rounded-md">
+                  <div [ngClass]="{'hidden': hoveredCard !== i}" class="absolute -top-3 -right-3 bg-white w-8 h-8 flex items-center justify-center border border-red-600 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" (click)="removeImage(i)" viewBox="0 0 24 24" fill="currentColor"  class="w-5 h-5 text-red-600 cursor-pointer icon-size-5">
+                      <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                    </svg>
                   </div>
-                  <p class="text-center text-sm text-red-500" *ngIf="!isImage2[0]">{{ is_not_image_message1 }}</p>
                 </div>
-                <div class="mb-2 sm:mb-0 sm:mr-2">
-                  <div class="flex justify-center items-center">
-                    <label for="productGalleryImageTwo"
-                      class="flex flex-col justify-center items-center w-full h-40 rounded-lg cursor-pointer ">
-                      <div class="h-full w-full flex justify-center items-center">
-                        <img [src]="gallerySrcTwo" *ngIf="gallerySrcTwo" class="h-full w-full object-contain">
-                        <div *ngIf="!gallerySrcTwo">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="h-[100px] w-[130px] text-gray-500">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                              d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                          </svg>
-                        </div>
-                      </div>
-                      <input id="productGalleryImageTwo" type="file" accept="image/*"
-                        (change)="galleryTwo($event, 'productGalleryImageTwo')" class="hidden">
-                    </label>
-                  </div>
-                  <p class="text-center text-sm text-red-500" *ngIf="!isImage1[0]">{{ is_not_image_message2 }}</p>
+            
+                <div class="w-[150px] h-[150px] flex items-center justify-center border border-dashed border-gray-400 rounded-md">
+                  <label for="file-upload" class="cursor-pointer">
+                    <span class="text-3xl font-semibold text-gray-500">+</span>
+                  </label>
+                  <input type="file" id="file-upload" (change)="onFileSelected($event)" class="hidden" accept="image/*">
                 </div>
               </div>
             </div>

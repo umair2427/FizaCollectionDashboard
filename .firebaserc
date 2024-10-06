@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "fizanoorcollection"
-  }
+    "default": "fizanoorcollectiondashboard",
+    "y": "fizanoorcollectiondashboard"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }

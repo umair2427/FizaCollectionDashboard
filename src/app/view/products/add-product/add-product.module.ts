@@ -23,7 +23,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     ReactiveFormsModule,
     FormsModule,
     NgSelectModule,
-    CKEditorModule
+    CKEditorModule,
   ],
   declarations: [AddProductPage]
 })
