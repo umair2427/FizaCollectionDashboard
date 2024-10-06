@@ -44,6 +44,7 @@ export class UpdateProductPage implements OnInit {
 
   images: string[] = [];
   selectedColors: string[] = [];
+  selectedSizes: string[] = [];
 
   hoveredCard: number = -1;
   maxImages: number = 5;
@@ -116,6 +117,7 @@ export class UpdateProductPage implements OnInit {
     this.images = res.productGalleryImages
 
     this.patchSelectedColors(res.colors);
+    this.patchSelectedSizes(res.sizes);
   }
 
   greaterThanZeroWithoutLeadingZero(control: AbstractControl): { [key: string]: any } | null {
@@ -206,8 +208,20 @@ export class UpdateProductPage implements OnInit {
     }
   }
 
+  onSizeChange(event: any, size: string) {
+    if (event.target.checked) {
+      this.selectedSizes.push(size);
+    } else {
+      this.selectedSizes = this.selectedSizes.filter(c => c !== size);
+    }
+  }
+
   patchSelectedColors(colors: string[]) {
     this.selectedColors = colors;
+  }
+
+  patchSelectedSizes(sizes: string[]) {
+    this.selectedSizes = sizes;
   }
 
   onFileSelected(event: any) {
@@ -286,7 +300,8 @@ export class UpdateProductPage implements OnInit {
         status: this.editProductForm.get('status')?.value,
         productDiscount: this.editProductForm.get('productDiscount')?.value,
         productDateTime: this.editProductForm.get('productDateTime')?.value,
-        colors: this.selectedColors
+        colors: this.selectedColors,
+        sizes: this.selectedSizes,
       }
 
       this.productService.updateProduct(this.productId, payload).subscribe(

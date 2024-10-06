@@ -36,6 +36,7 @@ export class AddProductPage implements OnInit {
   status: string[] = ['Published', 'Draft'];
 
   selectedColors: string[] = [];
+  selectedSizes: string[] = [];
   images: string[] = [];
 
   loader: boolean = false;
@@ -160,6 +161,14 @@ export class AddProductPage implements OnInit {
     }
   }
 
+  onSizeChange(event: any, size: string) {
+    if (event.target.checked) {
+      this.selectedSizes.push(size);
+    } else {
+      this.selectedSizes = this.selectedSizes.filter(c => c !== size);
+    }
+  }
+
   onFileSelected(event: any) {
     const files: FileList = event.target.files;
 
@@ -225,7 +234,8 @@ export class AddProductPage implements OnInit {
         status: this.addProductForm.get('status')?.value,
         productDiscount: this.addProductForm.get('productDiscount')?.value,
         productDateTime: this.addProductForm.get('productDateTime')?.value,
-        colors: this.selectedColors
+        colors: this.selectedColors,
+        sizes: this.selectedSizes
       }
 
       this.productService.addProducts(payload).subscribe(
